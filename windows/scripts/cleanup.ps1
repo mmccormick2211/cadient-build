@@ -1,43 +1,41 @@
-Write-Host "Uninstalling Chef..."
-$app = Get-WmiObject -Class Win32_Product | Where-Object {
-    $_.Name -match "Chef"
-}
-$app.Uninstall()
-
-Write-Host "Removing leftover Chef files..."
-Remove-Item "C:\Opscode\" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item "C:\Chef\" -Recurse -Force -ErrorAction SilentlyContinue
-
-Write-Host "Cleaning Temp Files..."
+Write-Host "Disabling AutoLogon..."
 try {
-  Takeown /d Y /R /f "C:\Windows\Temp\*"
-  Icacls "C:\Windows\Temp\*" /GRANT:r administrators:F /T /c /q  2>&1
-  Remove-Item "C:\Windows\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
-} catch { }
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 0 /f
+}
+catch { }
 
-Write-Host "Optimizing Drive"
-Optimize-Volume -DriveLetter C
+Write-Host "Cleaning SxS..."
+Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
 
-Write-Host "Wiping empty space on disk..."
-$FilePath="c:\zero.tmp"
-$Volume = Get-WmiObject win32_logicaldisk -filter "DeviceID='C:'"
-$ArraySize= 64kb
-$SpaceToLeave= $Volume.Size * 0.05
-$FileSize= $Volume.FreeSpace - $SpacetoLeave
-$ZeroArray= new-object byte[]($ArraySize)
+@(
+    "$env:localappdata\Nuget",
+    "$env:localappdata\temp\*",
+    "$env:windir\logs",
+    "$env:windir\panther",
+    "$env:windir\temp\*",
+    "$env:windir\winsxs\manifestcache",
+    "$env:windir\SoftwareDistribution\Download\*"
+) | % {
+        if(Test-Path $_) {
+            Write-Host "Removing $_"
+            try {
+              Takeown /d Y /R /f $_
+              Icacls $_ /GRANT:r administrators:F /T /c /q  2>&1 | Out-Null
+              Remove-Item $_ -Recurse -Force | Out-Null
+            } catch { $global:error.RemoveAt(0) }
+        }
 
-$Stream= [io.File]::OpenWrite($FilePath)
+Get-Service -Name wuauserv | Start-Service -Force -Verbose -NoWait -Confirm $false
+
+Write-Host "Running UltraDefrag..."
 try {
-   $CurFileSize = 0
-    while($CurFileSize -lt $FileSize) {
-        $Stream.Write($ZeroArray,0, $ZeroArray.Length)
-        $CurFileSize +=$ZeroArray.Length
-    }
+    udefrag.exe --optimize --repeat C:
 }
-finally {
-    if($Stream) {
-        $Stream.Close()
-    }
-}
+catch { }
 
-Remove-Item $FilePath
+Write-Host "Running SDelete..."
+try {
+    reg.exe ADD HKCU\Software\Sysinternals\SDelete /v EulaAccepted /t REG_DWORD /d 1 /f
+    sdelete.exe -q -z C:
+}
+catch { }

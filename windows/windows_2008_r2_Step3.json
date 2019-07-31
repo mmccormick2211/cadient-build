@@ -1,0 +1,77 @@
+{
+  "variables": {
+    "template": "win2008r2-std-gold",
+    "headless": "false",
+    "box_basename": "windows-2008r2",
+    "build_timestamp": "{{isotime \"20060102150405\"}}",
+    "cpus": "2",
+    "memory": "4096",
+    "disk_size": "65536"
+  },
+  "builders": [
+    {
+      "type": "vmware-vmx",
+      "source_path": "../builds/packer-win2008r2-std-updates-vmware/packer-win2008r2-std-updates-vmware.vmx",
+      "output_directory": "../builds/packer-{{user `template`}}-vmware",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "vm_name": "packer-{{user `template`}}-vmware",
+      "headless": "{{user `headless`}}",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "15m",
+      "vmx_remove_ethernet_interfaces": true
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "scripts": [
+        "scripts/win2008r2-cleanup-disk.ps1",
+        "scripts/cleanup.ps1"
+      ]
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "script": "scripts/save_shutdown_command.ps1"
+    }
+  ],
+  "post-processors": [
+    [
+      {
+        "type": "compress",
+        "output": "D:\\VagrantBoxes\\{{user `template`}}-vmware.zip",
+        "compression_level": 9,
+        "keep_input_artifact": true
+      }
+    ],
+    [
+      {
+        "type": "vagrant-vmware-ovf",
+        "compression_level": 9
+      }
+    ]
+  ]
+}
