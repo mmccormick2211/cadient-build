@@ -3,10 +3,7 @@
     "template": "win2008r2-std-gold",
     "headless": "false",
     "box_basename": "windows-2008r2",
-    "build_timestamp": "{{isotime \"20060102150405\"}}",
-    "cpus": "2",
-    "memory": "4096",
-    "disk_size": "65536"
+    "build_timestamp": "{{isotime \"20060102150405\"}}"
   },
   "builders": [
     {
@@ -37,12 +34,13 @@
         3010
       ],
       "scripts": [
-        "scripts/win2008r2-cleanup-disk.ps1",
+        "scripts/cleanup-disk.ps1",
         "scripts/cleanup.ps1"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "check_registry": true
     },
     {
       "type": "powershell",
@@ -62,7 +60,7 @@
     [
       {
         "type": "compress",
-        "output": "D:\\VagrantBoxes\\{{user `template`}}-vmware.zip",
+        "output": "../boxes/{{user `template`}}-vmware.zip",
         "compression_level": 9,
         "keep_input_artifact": true
       }

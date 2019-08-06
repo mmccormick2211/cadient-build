@@ -12,8 +12,8 @@
     "box_basename": "windows-2008r2",
     "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "cpus": "2",
-    "memory": "4096",
-    "disk_size": "65536"
+    "memory": "2048",
+    "disk_size": "32767"
   },
   "builders": [
     {
@@ -26,7 +26,7 @@
       "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "output_directory": "../builds/packer-{{user `template`}}-vmware",
+      "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "vm_name": "packer-{{user `template`}}-vmware",
       "headless": "{{user `headless`}}",
       "guest_os_type": "windows7srv-64",
@@ -50,7 +50,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "D:\\VagrantBoxes\\{{user `template`}}-vmware.zip",
+      "output": "D:/VAGRANT_BOXES/{{user `template`}}-vmware.zip",
       "compression_level": 9,
       "keep_input_artifact": true
     }

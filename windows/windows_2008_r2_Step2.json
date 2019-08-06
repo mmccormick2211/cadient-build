@@ -3,10 +3,7 @@
     "template": "win2008r2-std-updates",
     "headless": "false",
     "box_basename": "windows-2008r2",
-    "build_timestamp": "{{isotime \"20060102150405\"}}",
-    "cpus": "2",
-    "memory": "4096",
-    "disk_size": "65536"
+    "build_timestamp": "{{isotime \"20060102150405\"}}"
   },
   "builders": [
     {
@@ -141,6 +138,23 @@
     },
     {
       "type": "windows-restart"
+    },    {
+      "type": "windows-shell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "wusa.exe ./kb/Windows6.1-KB2852386-v2-x64.msu /quiet"
+      ]
+    },
+    {
+      "type": "windows-restart"
     },
     {
       "type": "powershell",
@@ -230,7 +244,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "D:\\VagrantBoxes\\{{user `template`}}-vmware.zip",
+      "output": "../boxes/{{user `template`}}-vmware.zip",
       "compression_level": 9,
       "keep_input_artifact": true
     }
