@@ -7,7 +7,7 @@
     "iso_name": "7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
     "iso_checksum": "beed231a34e90e1dd9a04b3afabec31d62ce3889",
     "iso_checksum_type": "sha1",
-    "template": "win2008r2-std-base",
+    "template": "win2008r2-std-1base",
     "headless": "false",
     "box_basename": "windows-2008r2",
     "build_timestamp": "{{isotime \"20060102-1504\"}}",

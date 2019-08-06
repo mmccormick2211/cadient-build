@@ -1,6 +1,6 @@
 {
   "variables": {
-    "template": "win2008r2-std-updates",
+    "template": "win2008r2-std-2updates",
     "headless": "false",
     "box_basename": "windows-2008r2",
     "build_timestamp": "{{isotime \"20060102150405\"}}"
@@ -8,8 +8,8 @@
   "builders": [
     {
       "type": "vmware-vmx",
-      "source_path": "../builds/packer-win2008r2-std-base-vmware/packer-win2008r2-std-base-vmware.vmx",
-      "output_directory": "../builds/packer-{{user `template`}}-vmware",
+      "source_path": "D:/PACKER_BUILDS/packer-win2008r2-std-1base-vmware/packer-win2008r2-std-1base-vmware.vmx",
+      "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "communicator": "winrm",
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",
@@ -140,15 +140,6 @@
       "type": "windows-restart"
     },    {
       "type": "windows-shell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
       "inline": [
         "wusa.exe ./kb/Windows6.1-KB2852386-v2-x64.msu /quiet"
       ]
@@ -244,7 +235,7 @@
   "post-processors": [
     {
       "type": "compress",
-      "output": "../boxes/{{user `template`}}-vmware.zip",
+      "output": "D:/VAGRANT_BOXES/{{user `template`}}-vmware.zip",
       "compression_level": 9,
       "keep_input_artifact": true
     }
