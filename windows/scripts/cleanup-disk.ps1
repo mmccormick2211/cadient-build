@@ -212,23 +212,32 @@ do
         try
         {   
             #Calculate and log freespace        
-            $FreeSpace = (Get-WmiObject win32_logicaldisk | where { $_.DeviceID -eq $env:SystemDrive }).FreeSpace
+            $FreeSpace = (Get-WmiObject win32_logicaldisk | Where-Object { $_.DeviceID -eq $env:SystemDrive }).FreeSpace
             if((Test-Path $ScriptRegKey) -eq $false)
             {
                 New-Item -Path $ScriptRegKey
             }
-            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptSpaceBeforeValue -Value $FreeSpace
+            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptSpaceBeforeValue -Value $FreeSpace -Force
             LogEntry "PhaseInit: Current Free Space: $([Math]::Round(($FreeSpace / 1GB),2))GB"
             
-             #Check to see if DE is already installed.            #If yes, set reg key to 1, else 0. Used to prevent DE from uninstalling unintentionally.            if((Get-WindowsFeature Desktop-Experience).Installed -eq $true)            {                Set-ItemProperty -Path $ScriptRegKey -name $ScriptDEStatusAtStart -Value 1            }            else            {                Set-ItemProperty -Path $ScriptRegKey -name $ScriptDEStatusAtStart -Value 0            }
-
-            if((Get-WindowsFeature Ink-Handwriting).Installed -eq $true)
+             #Check to see if DE is already installed.
+            #If yes, set reg key to 1, else 0. Used to prevent DE from uninstalling unintentionally.
+            if((Get-WindowsFeature Desktop-Experience).Installed -eq $true)
             {
-                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptInkStatusAtStart -Value 1
+                Set-ItemProperty -Path $ScriptRegKey -name $ScriptDEStatusAtStart -Value 1 -Force
             }
             else
             {
-                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptInkStatusAtStart -Value 0
+                Set-ItemProperty -Path $ScriptRegKey -name $ScriptDEStatusAtStart -Value 0 -Force
+            }
+
+            if((Get-WindowsFeature Ink-Handwriting).Installed -eq $true)
+            {
+                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptInkStatusAtStart -Value 1 -Force
+            }
+            else
+            {
+                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptInkStatusAtStart -Value 0 -Force
             }
 
             
@@ -258,8 +267,8 @@ do
                     CreateScheduledTask -ScriptPath $ScriptPath -TaskName $SchTaskName -fLogPath $LogPath 
                     LogEntry "PhaseInit: Created Scheduled Task $SchTaskName"                    
                     $CurrentState = GetCurrentState
-                    Restart-Computer
-                    Sleep 10
+                    Restart-Computer -Force -Verbose
+                    Start-Sleep 10
                 }
                 elseif($FeatureResult.ExitCode -eq "NoChangeNeeded")
                 {
@@ -294,12 +303,12 @@ do
       if((Get-WindowsFeature Desktop-Experience).Installed -eq $true) #check for pending reboot
       {
         LogEntry "PhaseStarted: DE Installed. Moving to PhaseDEInstalled."
-        Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDEInstalled
+        Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDEInstalled -Force
       }
       Else
       {
         LogEntry "PhaseStarted: DE not installed. Resetting phase to null."
-        New-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $null
+        New-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $null -Force
       }
 
       $CurrentState = GetCurrentState
@@ -321,15 +330,15 @@ do
             $SubKeys = Get-Childitem HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches
             Foreach ($Key in $SubKeys)
             {
-                Set-ItemProperty -Path $Key.PSPath -Name $StateFlags -Value $StateFlagNoAction
+                Set-ItemProperty -Path $Key.PSPath -Name $StateFlags -Value $StateFlagNoAction -Force
             }
 
             LogEntry "PhaseDEInstalled: VolumeCaches keys set."
-            LogEntry "PhaseDEInstalled: Setting UPdate and Service Pack Keys..."
+            LogEntry "PhaseDEInstalled: Setting Update and Service Pack Keys..."
             #Set all script reg values for persistence through reboots.
-            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptSageValueName -Value $SageSet
-            Set-ItemProperty -Path $UpdateCleanUpPath -Name $StateFlags -Value $StateFlagClean
-            Set-ItemProperty -Path $ServicePackCleanUpPath -Name $StateFlags -Value $StateFlagClean                                                                
+            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptSageValueName -Value $SageSet -Force
+            Set-ItemProperty -Path $UpdateCleanUpPath -Name $StateFlags -Value $StateFlagClean -Force
+            Set-ItemProperty -Path $ServicePackCleanUpPath -Name $StateFlags -Value $StateFlagClean -Force                                                              
             LogEntry "PhaseDEInstalled: Done." 
 
             #Update state key
@@ -351,7 +360,7 @@ do
         LogEntry "PhaseSageSetComplete: Starting cleanmgr."
         try
         {
-            $SageSet = (Get-ItemProperty -Path $ScriptRegKey -Name $ScriptSageValueName).SageSet
+            $SageSet = (Get-ItemProperty -Path $ScriptRegKey -Name $ScriptSageValueName).SageSet 
                         
             LogEntry "PhaseSageSetComplete: CleanMgr.exe running... "            
             $StartTime = Get-Date
@@ -361,7 +370,7 @@ do
             LogEntry "PhaseSageSetComplete: CleanMgr.exe complete..."
             LogEntry "PhaseSageSetComplete: Seconds Elapsed: $((New-TimeSpan $StartTime $EndTime).TotalSeconds)"
             LogEntry "PhaseSageSetComplete: Updating State..."
-            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseSageRunComplete
+            Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseSageRunComplete -Force
             $CurrentState = GetCurrentState
             LogEntry "PhaseSageSetComplete: Complete."
         }
@@ -417,7 +426,7 @@ do
             if($RemoveDE -eq $false)
             {
                 LogEntry "PhaseSageRunComplete: DE removal not required. Continuing..."
-                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved
+                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved -Force
                 $CurrentState = GetCurrentState
             }
 
@@ -445,7 +454,7 @@ do
                     { 
                         LogEntry "PhaseSageRunComplete: Rebooting..."
                         Restart-Computer -Force
-                        Sleep 10
+                        Start-Sleep 10
                     }
                     else
                     {
@@ -460,7 +469,7 @@ do
                     LogEntry "PhaseSageRunComplete: Reboot already pending. Rebooting..."
                     LogEntry "PhaseSageRunComplete: Rebooting..."
                     Restart-Computer -Force
-                    Sleep 10
+                    Start-Sleep 10
                 }
                 Else
                 {    
@@ -474,7 +483,7 @@ do
             {
                 #DE removed, update status
                 LogEntry "PhaseSageRunComplete: DE Removed. Updating status..."
-                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved
+                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved -Force
             }
             else
             {      
@@ -494,7 +503,7 @@ do
                     LogEntry "PhaseSageRunComplete: Feature removed successfully."
                     LogEntry "PhaseSageRunComplete: Rebooting..."
                     Restart-Computer -Force
-                    Sleep 10
+                    Start-Sleep 10
                 }
                 
                 elseif(($NoReboot -eq $false) -and ($InkFeatureResult.Success -eq $false) -and ($InkFeatureResult.RestartNeeded -eq "Yes"))
@@ -504,7 +513,7 @@ do
                     LogEntry "PhaseSageRunComplete: Reboot already pending. Rebooting..."
                     LogEntry "PhaseSageRunComplete: Rebooting..."
                     Restart-Computer -Force
-                    Sleep 10
+                    Start-Sleep 10
                 }
                 else
                 {    
@@ -518,7 +527,7 @@ do
             {
                 #Ink removed, update status
                 LogEntry "PhaseSageRunComplete: Ink Removed. Updating status..."
-                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved
+                Set-ItemProperty -Path $ScriptRegKey -Name $ScriptRegValueName -Value $PhaseDERemoved -Force
             }          
             else
             {      
@@ -563,7 +572,7 @@ do
     }
 
 #Prevents infinite loops consuming resources.
-Sleep 1
+Start-Sleep 1
 
 } until ($CurrentState -eq $PhaseTaskRemoved)
 
@@ -576,7 +585,7 @@ if($CurrentState -eq $PhaseTaskRemoved)
         LogEntry "PhaseTaskRemoved: Scheduled Task Deleted."
         LogEntry "PhaseTaskRemoved: Script Complete."
 
-        $CurrentSpace = (Get-WmiObject win32_logicaldisk | where { $_.DeviceID -eq $env:SystemDrive }).FreeSpace
+        $CurrentSpace = (Get-WmiObject win32_logicaldisk | Where-Object { $_.DeviceID -eq $env:SystemDrive }).FreeSpace
         LogEntry "PhaseTaskRemoved: Current Disk Space: $([Math]::Round(($CurrentSpace / 1GB),2)) GB"
         
         $Savings = [Math]::Round(((($CurrentSpace / $SpaceAtStart) - 1) * 100),2)

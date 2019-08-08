@@ -3,8 +3,6 @@ Write-Host "Performing the WinRM setup necessary to get the host ready for packe
 # parts of this are from https://github.com/luciusbono/Packer-Windows10/blob/master/configure-winrm.ps1
 # and https://github.com/rgl/windows-2016-vagrant/blob/master/winrm.ps1
 
-# Supress network location Prompt
-New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Network\NewNetworkWindowOff" -Force
 
 # Does a lot: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/enable-psremoting?view=powershell-6
 Enable-PSRemoting -SkipNetworkProfileCheck -Force

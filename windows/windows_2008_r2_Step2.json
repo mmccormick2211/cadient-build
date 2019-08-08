@@ -14,6 +14,7 @@
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",
       "winrm_timeout": "12h",
+      "display_name": "packer-{{user `template`}}-vmware",
       "vm_name": "packer-{{user `template`}}-vmware",
       "headless": "{{user `headless`}}",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
@@ -138,14 +139,6 @@
     },
     {
       "type": "windows-restart"
-    },    {
-      "type": "windows-shell",
-      "inline": [
-        "wusa.exe ./kb/Windows6.1-KB2852386-v2-x64.msu /quiet"
-      ]
-    },
-    {
-      "type": "windows-restart"
     },
     {
       "type": "powershell",
@@ -215,6 +208,18 @@
       ],
       "inline": [
         "choco upgrade powershell --acceptlicense --yes --no-progress"
+      ]
+    },
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
+      "inline": [
+        "$TempInstall = \"$env:temp\\KB2852386.msu\"",
+        "$url = 'https://download.microsoft.com/download/2/A/3/2A3FD850-E45F-47D4-AFF8-8048333CBA7D/Windows6.1-KB2852386-v2-x64.msu'",
+        "Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $TempInstall",
+        "Start-Process -FilePath $TempInstall -Args \"/quiet\" -Wait"
       ]
     },
     {

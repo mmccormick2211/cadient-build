@@ -38,57 +38,6 @@
         "scripts/Cleanup-Disk.ps1"
       ],
       "remote_path":"C:/windows/temp/cleanup-disk.ps1"
-    },
-    {
-      "type": "windows-restart"},
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "scripts": [
-        "scripts/Cleanup-Part2.ps1"
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "check_registry": true,
-      "restart_timeout": "6h"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "script": "scripts/save_shutdown_command.ps1"
     }
-  ],
-  "post-processors": [
-    [
-      {
-        "type": "compress",
-        "output": "D:/VAGRANT_BOXES/{{user `template`}}-vmware.zip",
-        "compression_level": 9,
-        "keep_input_artifact": true
-      }
-    ],
-    [
-      {
-        "type": "vagrant-vmware-ovf",
-        "compression_level": 9
-      }
-    ]
   ]
 }
