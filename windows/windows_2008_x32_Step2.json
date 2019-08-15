@@ -1,14 +1,14 @@
 {
   "variables": {
-    "template": "win2008r2-std-2updates",
+    "template": "win2008x32-std-2updates",
     "headless": "false",
-    "box_basename": "windows-2008r2",
+    "box_basename": "windows-2008x32",
     "build_timestamp": "{{isotime \"20060102150405\"}}"
   },
   "builders": [
     {
       "type": "vmware-vmx",
-      "source_path": "D:/PACKER_BUILDS/packer-win2008r2-std-1base-vmware/packer-win2008r2-std-1base-vmware.vmx",
+      "source_path": "D:/PACKER_BUILDS/packer-win2008x32-std-1base-vmware/packer-win2008x32-std-1base-vmware.vmx",
       "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "communicator": "winrm",
       "winrm_username": "vagrant",
