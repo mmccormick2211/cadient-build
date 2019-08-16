@@ -217,23 +217,31 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>99</Order>
-                    <Description>Packer Shutdown</Description>
-                    <CommandLine>shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Shutdown&quot;</CommandLine>
+                    <Description>Packer Wait and Shutdown</Description>
+                    <CommandLine>powershell.exe -Version 1 -NoLogo -NoProfile -Command {$file = &quot;C:\users\vagrant\Desktop\delete-to-continue.txt&quot;;if (-Not (Test-Path $file)) {&quot;Remove me&quot;|Out-File $file};&quot;Wait until someone removes $file&quot;;while (Test-Path $file) {Start-Sleep -Seconds 10};&quot;Done waiting!&quot;} &amp;&amp; shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Shutdown&quot;</CommandLine>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <Order>20</Order>
-                    <CommandLine>%COMSPEC% /C A:\Install-WMF3.0.cmd</CommandLine>
-                    <Description>Install WMF 3.0</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
-                    <Description>Packer Reboot</Description>
-                    <Order>21</Order>
+                    <Order>24</Order>
+                    <CommandLine>%COMSPEC% /C A:\Install-WMF2.0.cmd</CommandLine>
+                    <Description>Install WMF 2.0</Description>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff</CommandLine>
                     <Description>Supress network location Prompt</Description>
                     <Order>4</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>20</Order>
+                    <CommandLine>%COMSPEC% /C A:\Install-DotNet3.51.cmd</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>22</Order>
+                    <CommandLine>%COMSPEC% /C A:\Install-DotNet4.0.cmd</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%COMSPEC% /C A:\Install-WMF3.0.cmd</CommandLine>
+                    <Description>Install WMF3.0</Description>
+                    <Order>26</Order>
                 </SynchronousCommand>
             </FirstLogonCommands>
         </component>

@@ -3,22 +3,20 @@ setlocal
 PING -n 121 127.0.0.1>nul
 
 :SETUP
-set "WMF3_URL=http://download.microsoft.com/download/E/7/6/E76850B8-DA6E-4FF5-8CCE-A24FC513FD16/Windows6.0-KB2506146-x86.msu"
-set "KB2506146=%TEMP%\Windows6.0-KB2506146-x86.msu"
-
+set "INSTALL_URL=https://download.microsoft.com/download/2/0/E/20E90413-712F-438C-988E-FDAA79A8AC3D/dotnetfx35.exe"
+set "TOINSTALL=%TEMP%\dotnetfx35.exe"
 
 :MAIN
 ECHO.
-ECHO FILE URL:   "%WMF3_URL%"
-ECHO SAVING TO:  "%KB2506146%"
+ECHO FILE URL:   "%INSTALL_URL%"
+ECHO SAVING TO:  "%TOINSTALL%"
 ECHO.
-
-CALL :DOWNLOAD_FILE "%WMF3_URL%" "%KB2506146%"
-ECHO Finished downloading "%KB2506146%"
+CALL :DOWNLOAD_FILE "%INSTALL_URL%" "%TOINSTALL%"
+ECHO Finished downloading "%TOINSTALL%"
 
 :INSTALL
-ECHO Installing "%KB2506146%"
-START "Install WMF3.0" /D %TEMP% /WAIT "%KB2506146%" /QUIET /NORESTART
+ECHO Installing "%TOINSTALL%"
+START "Install .NET 3.5.1" /D %TEMP% /WAIT "%TOINSTALL%" /q /norestart
 shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot""
 EXIT /B
 

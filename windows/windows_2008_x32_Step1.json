@@ -1,5 +1,5 @@
 {
-  "description": "",
+  "description": "Base install of Windows 2008 SP2 x32 with WMF3.0 and .NET 4.0",
   "min_packer_version": "",
   "variables": {
     "mirror": "https://archive.org/download",
@@ -20,7 +20,10 @@
       "type": "vmware-iso",
       "name": "{{user `box_basename`}}",
       "guest_os_type": "longhorn",
-      "communicator": "none",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
       "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -38,14 +41,17 @@
       "usb": false,
       "floppy_files": [
         "answer_files/2008/Autounattend.xml",
+        "scripts/Install-DotNet3.51.cmd",
+        "scripts/Install-DotNet4.0.cmd",
+        "scripts/Install-WMF2.0.cmd",
+        "scripts/Install-WMF3.0.cmd",
+        "scripts/Set-ExplorerConfig.cmd",
         "scripts/Enable-RDP.cmd",
         "scripts/Set-PowerPlan.cmd",
-        "scripts/Set-ExplorerConfig.cmd",
-        "scripts/Install-WMF3.0.cmd",
         "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "20m",
+      "shutdown_timeout": "1h",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

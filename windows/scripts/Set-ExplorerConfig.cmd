@@ -16,6 +16,6 @@
 :: Show Run command in Start Menu
 %SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ /v Start_ShowRun /t REG_DWORD /d 1 /f
 :: Supress network location Prompt
-%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff
+%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff /t REG_DWORD /d 1 /f
 :: Disable Thumbnail Cache on network files
 %SystemRoot%\System32\reg.exe ADD HKCU\Software\Policies\Microsoft\Explorer\ /v DisableThumbsDBOnNetworkFolders /t REG_DWORD /d 1 /f

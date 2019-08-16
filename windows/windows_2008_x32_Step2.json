@@ -24,16 +24,7 @@
   ],
   "provisioners": [
     {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
+      "type": "windows-shell",
       "script": "scripts/Install-Chocolatey.cmd"
     },
     {
@@ -86,13 +77,6 @@
     },
     {
       "type": "windows-shell",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
       "script":"scripts/Choco-InstallDotNet.cmd"
     },
     {
