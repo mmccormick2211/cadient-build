@@ -217,8 +217,8 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>99</Order>
-                    <Description>Packer Reboot</Description>
-                    <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
+                    <Description>Packer Shutdown</Description>
+                    <CommandLine>shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Shutdown&quot;</CommandLine>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Order>20</Order>
@@ -229,6 +229,11 @@
                     <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
                     <Description>Packer Reboot</Description>
                     <Order>21</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff</CommandLine>
+                    <Description>Supress network location Prompt</Description>
+                    <Order>4</Order>
                 </SynchronousCommand>
             </FirstLogonCommands>
         </component>

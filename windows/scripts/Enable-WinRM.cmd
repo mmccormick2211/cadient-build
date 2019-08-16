@@ -20,7 +20,3 @@ CALL winrm set winrm/config/listener?Address=*+Transport=HTTP @{Port="5985"}
 net stop winrm
 %SystemRoot%\System32\sc.exe config winrm start= auto
 net start winrm
-
-CALL winrm get winrm/config -format:pretty
-
-TIMEOUT /T 30 /nobreak
