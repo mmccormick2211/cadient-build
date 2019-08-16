@@ -34,9 +34,7 @@
         1641,
         3010
       ],
-      "inline": [
-        "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
-      ]
+      "script": "scripts/Install-Chocolatey.cmd"
     },
     {
       "type": "powershell",
@@ -87,9 +85,7 @@
       "type": "windows-restart"
     },
     {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
+      "type": "windows-shell",
       "valid_exit_codes": [
         0,
         1605,
@@ -97,27 +93,7 @@
         1641,
         3010
       ],
-      "inline": [
-        "choco upgrade kb976932 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade kb3035131 --acceptlicense --yes --no-progress"
-      ]
+      "script":"scripts/Choco-InstallDotNet.cmd"
     },
     {
       "type": "windows-restart"
@@ -134,96 +110,10 @@
         3010
       ],
       "inline": [
-        "choco upgrade kb3033929 --acceptlicense --yes --no-progress"
+        "choco pin remove --yes --acceptlicense --nocolor --name=powershell",
+        "choco pin add --yes --acceptlicense --nocolor --name=powershell --version=3.0.20121027",
+        "choco upgrade powershell --yes --acceptlicense --nocolor"
       ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco install   NetFx3                        --source='WindowsFeatures'",
-        "choco uninstall MicrosoftWindowsPowerShellISE --source='WindowsFeatures'"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade dotnetfx --version 4.5.2.0 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade powershell --version 4.0.20141001 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade powershell --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "$TempInstall = \"$env:temp\\KB2852386.msu\"",
-        "$url = 'https://download.microsoft.com/download/2/A/3/2A3FD850-E45F-47D4-AFF8-8048333CBA7D/Windows6.1-KB2852386-v2-x64.msu'",
-        "Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $TempInstall",
-        "Start-Process -FilePath $TempInstall -Args \"/quiet\" -Wait"
-      ]
-    },
-    {
-      "type": "windows-restart"
     },
     {
       "type": "windows-update",

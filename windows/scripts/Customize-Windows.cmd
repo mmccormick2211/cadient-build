@@ -1,7 +1,13 @@
-:: Set Powershell Execution Policy - 64 Bit
+:: Set Powershell Execution Policy - OS Native
 %ComSpec% /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
-:: Set Powershell Execution Policy - 32 Bit
+:: Set Powershell Execution Policy - WOW64
 %SystemRoot%\SysWOW64\cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
+
+:: Enable UAC
+%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 1 /f
+:: Disable UAC
+%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
+
 :: Disable computer password change
 %SystemRoot%\System32\reg.exe ADD HKLM\System\CurrentControlSet\Services\Netlogon\Parameters /v DisablePasswordChange /t REG_DWORD /d 1 /f
 :: Enable Console QuickEdit mode

@@ -2,11 +2,11 @@
   "description": "",
   "min_packer_version": "",
   "variables": {
-    "mirror": "http://download.microsoft.com/download",
-    "mirror_directory": "D/D/B/DDB17DC1-A879-44DD-BD11-C0991D292AD7",
-    "iso_name": "6001.18000.080118-1840_x86fre_Server_en-us-KRMSFRE_EN_DVD.iso",
-    "iso_checksum": "B4756A10D945137E0E28948621D5C620D5203AC80F7EC8EA3A3AB9EC5F2DC152",
-    "iso_checksum_type": "sha256",
+    "mirror": "https://archive.org/download",
+    "mirror_directory": "WindowsServer2008withSP2x86",
+    "iso_name": "en_windows_server_2008_with_sp2_x86_dvd_342333.iso",
+    "iso_checksum": "49D0D6917C1256FE81048D414FA473BBC76A8724",
+    "iso_checksum_type": "sha1",
     "template": "win2008x32-std-1base",
     "headless": "false",
     "box_basename": "windows-2008x32",
@@ -19,10 +19,8 @@
     {
       "type": "vmware-iso",
       "name": "{{user `box_basename`}}",
-      "communicator": "winrm",
-      "winrm_username": "vagrant",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "12h",
+      "guest_os_type": "longhorn",
+      "communicator": "none",
       "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -39,10 +37,15 @@
       "sound": false,
       "usb": false,
       "floppy_files": [
-        "answer_files/2008/Autounattend.xml"
+        "answer_files/2008/Autounattend.xml",
+        "scripts/Enable-RDP.cmd",
+        "scripts/Set-PowerPlan.cmd",
+        "scripts/Set-ExplorerConfig.cmd",
+        "scripts/Install-WMF3.0.cmd",
+        "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "15m",
+      "shutdown_timeout": "20m",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

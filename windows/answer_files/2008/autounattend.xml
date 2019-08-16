@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
-    <servicing></servicing>
+    <servicing>
+        <package action="configure">
+            <assemblyIdentity name="Microsoft-Windows-Foundation-Package" version="6.0.6001.18000" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="" />
+            <selection name="MicrosoftWindowsPowerShell" state="true" />
+            <selection name="NetFx3" state="true" />
+            <selection name="TelnetClient" state="true" />
+        </package>
+    </servicing>
     <settings pass="windowsPE">
         <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <SetupUILanguage>
                 <UILanguage>en-US</UILanguage>
             </SetupUILanguage>
+            <InputLocale>en-US</InputLocale>
+            <UILanguage>en-US</UILanguage>
+            <UserLocale>en-US</UserLocale>
+            <SystemLocale>en-US</SystemLocale>
         </component>
         <component name="Microsoft-Windows-PnpCustomizationsWinPE" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DriverPaths>
@@ -64,6 +75,7 @@
                         <DiskID>0</DiskID>
                         <PartitionID>2</PartitionID>
                     </InstallTo>
+                    <InstallToAvailablePartition>false</InstallToAvailablePartition>
                 </OSImage>
             </ImageInstall>
             <UserData>
@@ -75,201 +87,6 @@
                 <FullName>Cadient IT</FullName>
                 <Organization>Cadient LLC</Organization>
             </UserData>
-        </component>
-    </settings>
-    <settings pass="oobeSystem">
-        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <AutoLogon>
-                <Password>
-                    <Value>vagrant</Value>
-                    <PlainText>true</PlainText>
-                </Password>
-                <Enabled>true</Enabled>
-                <Username>vagrant</Username>
-            </AutoLogon>
-            <FirstLogonCommands>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>REG ADD &quot;HKLM\System\CurrentControlSet\Services\Netlogon\Parameters&quot; /v DisablePasswordChange /t REG_DWORD /d 1 /f</CommandLine>
-                    <Description>Disable computer password change</Description>
-                    <Order>1</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"</CommandLine>
-                    <Description>Set Execution Policy 64 Bit</Description>
-                    <Order>2</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>C:\Windows\SysWOW64\cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"</CommandLine>
-                    <Description>Set Execution Policy 32 Bit</Description>
-                    <Order>3</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm quickconfig -q</CommandLine>
-                    <Description>winrm quickconfig -q</Description>
-                    <Order>4</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm quickconfig -transport:http</CommandLine>
-                    <Description>winrm quickconfig -transport:http</Description>
-                    <Order>5</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config @{MaxTimeoutms="1800000"}</CommandLine>
-                    <Description>Win RM MaxTimoutms</Description>
-                    <Order>6</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config/winrs @{MaxMemoryPerShellMB="800"}</CommandLine>
-                    <Description>Win RM MaxMemoryPerShellMB</Description>
-                    <Order>7</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config/service @{AllowUnencrypted="true"}</CommandLine>
-                    <Description>Win RM AllowUnencrypted</Description>
-                    <Order>8</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config/service/auth @{Basic="true"}</CommandLine>
-                    <Description>Win RM auth Basic</Description>
-                    <Order>9</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config/client/auth @{Basic="true"}</CommandLine>
-                    <Description>Win RM client auth Basic</Description>
-                    <Order>10</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c winrm set winrm/config/listener?Address=*+Transport=HTTP @{Port="5985"} </CommandLine>
-                    <Description>Win RM listener Address/Port</Description>
-                    <Order>11</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c netsh advfirewall firewall set rule group="remote administration" new enable=yes </CommandLine>
-                    <Description>Win RM adv firewall enable</Description>
-                    <Order>12</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c netsh firewall add portopening TCP 5985 "Port 5985" </CommandLine>
-                    <Description>Win RM port open</Description>
-                    <Order>13</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c net stop winrm </CommandLine>
-                    <Description>Stop Win RM Service </Description>
-                    <Order>14</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c sc config winrm start= auto</CommandLine>
-                    <Description>Win RM Autostart</Description>
-                    <Order>15</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c net start winrm</CommandLine>
-                    <Description>Start Win RM Service</Description>
-                    <Order>16</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ /v HideFileExt /t REG_DWORD /d 0 /f</CommandLine>
-                    <Order>17</Order>
-                    <Description>Show file extensions in Explorer</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f</CommandLine>
-                    <Order>18</Order>
-                    <Description>Enable QuickEdit mode</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ /v Start_ShowRun /t REG_DWORD /d 1 /f</CommandLine>
-                    <Order>19</Order>
-                    <Description>Show Run command in Start Menu</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ /v StartMenuAdminTools /t REG_DWORD /d 1 /f</CommandLine>
-                    <Order>20</Order>
-                    <Description>Show Administrative Tools in Start Menu</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Power\ /v HibernateFileSizePercent /t REG_DWORD /d 0 /f</CommandLine>
-                    <Order>21</Order>
-                    <Description>Zero Hibernation File</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Power\ /v HibernateEnabled /t REG_DWORD /d 0 /f</CommandLine>
-                    <Order>22</Order>
-                    <Description>Disable Hibernation Mode</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd.exe /c wmic useraccount where "name='vagrant'" set PasswordExpires=FALSE</CommandLine>
-                    <Order>23</Order>
-                    <Description>Disable password expiration for vagrant user</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd /c powercfg -Change -monitor-timeout-ac 0</CommandLine>
-                    <Order>25</Order>
-                    <Description>Don&apos;t blank monitor on AC</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>26</Order>
-                    <CommandLine>powercfg -Change -monitor-timeout-dc 0</CommandLine>
-                    <Description>Don&apos;t blank monitor on DC</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ /v EnableAutoTray /t REG_DWORD /d 0 /f</CommandLine>
-                    <Description>Show all icons and notifications on the taskbar notification area</Description>
-                    <Order>27</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>REG ADD &quot;HKCU:\Control Panel\Desktop&quot; /v ScreenSaveActive /t REG_DWORD /d 0 /f</CommandLine>
-                    <Description>Disable ScreenSaver</Description>
-                    <Order>28</Order>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <CommandLine>cmd /c powercfg -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</CommandLine>
-                    <Description>Set power configuration to High Performance</Description>
-                    <Order>24</Order>
-                </SynchronousCommand>
-            </FirstLogonCommands>
-            <OOBE>
-                <HideEULAPage>true</HideEULAPage>
-                <NetworkLocation>Home</NetworkLocation>
-            </OOBE>
-            <Themes>
-                <DefaultThemesOff>true</DefaultThemesOff>
-            </Themes>
-            <UserAccounts>
-                <AdministratorPassword>
-                    <Value>open1t2p!</Value>
-                    <PlainText>true</PlainText>
-                </AdministratorPassword>
-                <LocalAccounts>
-                    <LocalAccount wcm:action="add">
-                        <Password>
-                            <Value>vagrant</Value>
-                            <PlainText>true</PlainText>
-                        </Password>
-                        <Description>Vagrant User</Description>
-                        <DisplayName>Vagrant User</DisplayName>
-                        <Group>Administrators</Group>
-                        <Name>vagrant</Name>
-                    </LocalAccount>
-                </LocalAccounts>
-            </UserAccounts>
-            <VisualEffects>
-                <FontSmoothing>Standard</FontSmoothing>
-            </VisualEffects>
-            <WindowsFeatures>
-                <ShowWindowsMediaPlayer>false</ShowWindowsMediaPlayer>
-                <ShowWindowsMail>false</ShowWindowsMail>
-                <ShowMediaCenter>false</ShowMediaCenter>
-                <ShowInternetExplorer>true</ShowInternetExplorer>
-            </WindowsFeatures>
-            <ShowWindowsLive>false</ShowWindowsLive>
-            <TimeZone>UTC</TimeZone>
-            <RegisteredOwner />
-            <RegisteredOrganization />
-            <DoNotCleanTaskBar>false</DoNotCleanTaskBar>
-            <BluetoothTaskbarIconEnabled>false</BluetoothTaskbarIconEnabled>
-            <DisableAutoDaylightTimeSet>false</DisableAutoDaylightTimeSet>
         </component>
     </settings>
     <settings pass="specialize">
@@ -306,19 +123,6 @@
         <component name="Microsoft-Windows-ServerManager-SvrMgrNc" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DoNotOpenServerManagerAtLogon>true</DoNotOpenServerManagerAtLogon>
         </component>
-        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <ComputerName>vagrant-2008</ComputerName>
-            <OEMInformation>
-                <HelpCustomized>false</HelpCustomized>
-            </OEMInformation>
-            <TimeZone>UTC</TimeZone>
-            <RegisteredOrganization />
-            <RegisteredOwner />
-            <DoNotCleanTaskBar>false</DoNotCleanTaskBar>
-            <ShowWindowsLive>false</ShowWindowsLive>
-            <BluetoothTaskbarIconEnabled>false</BluetoothTaskbarIconEnabled>
-            <StartPanelOff>false</StartPanelOff>
-        </component>
         <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <fDenyTSConnections>false</fDenyTSConnections>
         </component>
@@ -329,6 +133,104 @@
                     <Active>true</Active>
                 </FirewallGroup>
             </FirewallGroups>
+        </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <Path>%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f</Path>
+                    <Description>Disable UAC</Description>
+                    <WillReboot>Always</WillReboot>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
+    </settings>
+    <settings pass="oobeSystem">
+        <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <AutoLogon>
+                <Password>
+                    <Value>vagrant</Value>
+                    <PlainText>true</PlainText>
+                </Password>
+                <Enabled>true</Enabled>
+                <Username>vagrant</Username>
+            </AutoLogon>
+            <ShowWindowsLive>false</ShowWindowsLive>
+            <TimeZone>UTC</TimeZone>
+            <OOBE>
+                <HideEULAPage>true</HideEULAPage>
+            </OOBE>
+            <UserAccounts>
+                <AdministratorPassword>
+                    <Value>open1t2p!</Value>
+                    <PlainText>true</PlainText>
+                </AdministratorPassword>
+                <LocalAccounts>
+                    <LocalAccount wcm:action="add">
+                        <Password>
+                            <Value>vagrant</Value>
+                            <PlainText>true</PlainText>
+                        </Password>
+                        <Name>vagrant</Name>
+                        <Group>Administrators</Group>
+                        <DisplayName>Vagrant User</DisplayName>
+                        <Description>Vagrant User</Description>
+                    </LocalAccount>
+                </LocalAccounts>
+            </UserAccounts>
+            <RegisteredOrganization />
+            <RegisteredOwner />
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <Order>1</Order>
+                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f</CommandLine>
+                    <Description>Disable UAC</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <CommandLine>%COMSPEC% /c wmic useraccount where &quot;name=&apos;vagrant&apos;&quot; set PasswordExpires=FALSE</CommandLine>
+                    <Description>Disable password expiration for vagrant user</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f</CommandLine>
+                    <Description>Enable QuickEdit mode on console</Description>
+                    <Order>3</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>98</Order>
+                    <CommandLine>%COMSPEC% /C A:\Enable-WinRM.cmd</CommandLine>
+                    <Description>Enable WinRM, Release to Packer</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>97</Order>
+                    <CommandLine>%COMSPEC% /C A:\Set-PowerPlan.cmd</CommandLine>
+                    <Description>Power settings for VMs</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>96</Order>
+                    <CommandLine>%COMSPEC% /C A:\Enable-RDP.cmd</CommandLine>
+                    <Description>Enable RDP</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>95</Order>
+                    <CommandLine>%COMSPEC% /C A:\Set-ExplorerConfig.cmd</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>99</Order>
+                    <Description>Packer Reboot</Description>
+                    <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Order>20</Order>
+                    <CommandLine>%COMSPEC% /C A:\Install-WMF3.0.cmd</CommandLine>
+                    <Description>Install WMF 3.0</Description>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
+                    <Description>Packer Reboot</Description>
+                    <Order>21</Order>
+                </SynchronousCommand>
+            </FirstLogonCommands>
         </component>
     </settings>
     <cpi:offlineImage cpi:source="catalog:d:/win2008/sources/install_windows longhorn serverstandard.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
