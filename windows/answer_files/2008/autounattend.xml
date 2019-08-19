@@ -243,6 +243,11 @@
                     <Description>Install WMF3.0</Description>
                     <Order>26</Order>
                 </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
+                    <Description>Set Powershell Execution Policy</Description>
+                    <Order>27</Order>
+                </SynchronousCommand>
             </FirstLogonCommands>
         </component>
     </settings>

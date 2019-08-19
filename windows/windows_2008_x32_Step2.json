@@ -25,6 +25,12 @@
   "provisioners": [
     {
       "type": "windows-shell",
+      "inline": [
+        "@\"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \"Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"
+      ]
+    },
+    {
+      "type": "windows-shell",
       "script": "scripts/Install-Chocolatey.cmd"
     },
     {
@@ -77,7 +83,7 @@
     },
     {
       "type": "windows-shell",
-      "script":"scripts/Choco-InstallDotNet.cmd"
+      "script": "scripts/Choco-InstallDotNet.cmd"
     },
     {
       "type": "windows-restart"
