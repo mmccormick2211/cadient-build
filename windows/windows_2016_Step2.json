@@ -1,72 +1,44 @@
 {
   "variables": {
-    "mirror": "http://download.microsoft.com/download",
-    "mirror_directory": "pr",
-    "iso_name": "Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-    "iso_checksum": "772700802951b36c8cb26a61c040b9a8dc3816a3",
-    "iso_checksum_type": "sha1",
-
-		"template": "windows-2016-standard",
-
+    "template": "win2016-std-2updates",
     "headless": "false",
     "box_basename": "windows-2016",
-    "build_timestamp": "{{isotime \"20060102150405\"}}",
-
-    "cpus": "2",
-    "memory": "4096",
-    "disk_size": "65536",
-
-    "floppy_files": "answer_files/2016/Autounattend.xml"
-
+    "build_timestamp": "{{isotime \"20060102150405\"}}"
   },
   "builders": [
-    { "type": "vmware-iso",
-      "name": "{{user `box_basename`}}",
+    {
+      "type": "vmware-vmx",
+      "source_path": "D:/PACKER_BUILDS/packer-win2016-std-1base-vmware/packer-win2016-std-1base-vmware.vmx",
+      "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "communicator": "winrm",
-        "winrm_username": "vagrant",
-        "winrm_password": "vagrant",
-        "winrm_timeout": "12h",
-  
-        "iso_url":            "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
-        "iso_checksum":       "{{user `iso_checksum`}}",
-        "iso_checksum_type":  "{{user `iso_checksum_type`}}",
-        "output_directory":   "../builds/packer-{{user `template`}}-vmware",
-
-        "vm_name":  "packer-{{user `template`}}-vmware",
-        "headless": "{{user `headless`}}",
-
-        "guest_os_type": "windows9srv-64",
-        "cpus":           "{{user `cpus` }}",
-        "cores":          1,
-        "memory":         "{{user `memory` }}",
-        "disk_size":      "{{user `disk_size`}}",
-        "disk_adapter_type": "lsisas1068",
-        "disk_type_id":   "4",
-        "parallel": "NONE",
-        "serial": "NONE",
-        "sound": false,
-        "usb": false,
-
-        "floppy_files": "{{user `floppy_files`}}",
-  
-        "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-        "shutdown_timeout": "15m",
-        "vmx_remove_ethernet_interfaces": true
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "display_name": "packer-{{user `template`}}-vmware",
+      "vm_name": "packer-{{user `template`}}-vmware",
+      "headless": "{{user `headless`}}",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "15m",
+      "vmx_remove_ethernet_interfaces": false
     }
   ],
-
   "provisioners": [
-    { "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": ["Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"]
+    {
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
     },
-    { "type": "powershell",
+    {
+      "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": [ 
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
         "#choco config  set     --name='proxy'         --value=''",
         "#choco config  set     --name='proxyUser'     --value=''",
         "#choco config  set     --name='proxyPassword' --value=''",
@@ -76,85 +48,98 @@
         "choco feature enable  --name='logWithoutColor'"
       ]
     },
-    { "type": "windows-restart" },
-    { "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": [ 
-        "choco upgrade vmware-tools --acceptlicense --yes --no-progress",
-        "choco upgrade 7zip         --acceptlicense --yes --no-progress"      ]
+    {
+      "type": "windows-restart"
     },
-    { "type": "windows-restart" },
-    { "type": "powershell",
+    {
+      "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": [ 
-        "choco install NetFx3               --source='WindowsFeatures'",
-        "choco install NetFx3ServerFeatures --source='WindowsFeatures'",
-        "choco uninstall MicrosoftWindowsPowerShellISE --source='WindowsFeatures'"
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco upgrade 7zip --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade choco-shortcuts-winconfig --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade choco-cleaner --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade flashplayerplugin-disable-updates-winconfig --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade sysinternals --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade ultradefrag --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade vmware-tools --yes --acceptlicense --nocolor --no-progress"
       ]
     },
-    { "type": "windows-restart" },
-    { "type": "powershell",
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": [ "choco upgrade dotnetfx --acceptlicense --yes --no-progress" ]
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco upgrade dotnet3.5 --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade dotnetfx --version=4.5.2.0 --yes --acceptlicense --nocolor --no-progress",
+        "choco pin remove --name=dotnetfx  --yes --acceptlicense --nocolor --no-progress",
+        "choco pin add --name=dotnetfx --version=4.5.2.0  --yes --acceptlicense --nocolor --no-progress",
+        "#",
+        " #choco pin add --name=dotnetfx --version=4.5.0.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.5.1.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.5.2.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.6.0.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.6.1.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.6.2.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.7.0.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.7.1.0  --yes --acceptlicense --nocolor --no-progress",
+        " #choco pin add --name=dotnetfx --version=4.7.2.0  --yes --acceptlicense --nocolor --no-progress"
+      ]
     },
-    { "type": "windows-restart" },
-    { "type": "powershell",
+    {
+      "type": "windows-restart"
+    },
+    {
+      "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "inline": [ "choco upgrade powershell --acceptlicense --yes --no-progress" ]
-    },
-    { "type": "windows-restart" },
-    { "type": "chef-solo",
-      "guest_os_type": "windows",
-      "cookbook_paths": ["cookbooks"],
-      "run_list": [
-          "packer::disable_uac",
-          "packer::disable_restore",
-          "packer::disable_windows_update",
-          "packer::remove_defender"
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco pin remove --name=powershell   --yes --acceptlicense --nocolor --no-progress",
+        "choco upgrade powershell  --yes --acceptlicense --nocolor --no-progress"
       ]
     },
-    { "type": "windows-restart" },
-    { "type": "chef-solo",
-      "guest_os_type": "windows",
-      "cookbook_paths": ["cookbooks"],
-      "run_list": [
-          "packer::enable_file_sharing",
-          "packer::enable_remote_desktop",
-          "packer::ui_tweaks",
-          "packer::power"
-      ]
-    },
-    { "type": "windows-restart" },
-    { "type": "windows-update",
+    {
+      "type": "windows-update",
       "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
-      "filters": [ "exclude:$_.Title -like '*Preview*'", "include:$true" ]
-    },
-    { "type": "windows-restart" },
-    { "type": "chef-solo",
-      "guest_os_type": "windows",
-      "cookbook_paths": ["cookbooks"],
-      "run_list": [
-        "packer::disable_uac",
-        "packer::disable_windows_update",
-        "packer::cleanup",
-        "packer::defrag"
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$true"
       ]
     },
-    { "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [0, 1605, 1614, 1641, 3010],
-      "script": "scripts/cleanup.ps1"
+    {
+      "type": "windows-restart"
     }
-],
-
-  "post-processors": [  { "type": "vagrant-vmware-ovf"  } ]
+  ],
+  "post-processors": [
+    {
+      "type": "compress",
+      "output": "D:/VAGRANT_BOXES/{{user `template`}}-vmware.zip",
+      "compression_level": 9,
+      "keep_input_artifact": true
+    }
+  ]
 }

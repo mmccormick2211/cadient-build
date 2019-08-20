@@ -1,5 +1,5 @@
 {
-  "description": "",
+  "description": "Base install of Windows 2016 Standard",
   "min_packer_version": "",
   "variables": {
     "mirror": "http://download.microsoft.com/download",
@@ -41,10 +41,14 @@
       "sound": false,
       "usb": false,
       "floppy_files": [
-        "answer_files/2016/Autounattend.xml"
+        "answer_files/2016/Autounattend.xml",
+        "scripts/Set-ExplorerConfig.cmd",
+        "scripts/Enable-RDP.cmd",
+        "scripts/Set-PowerPlan.cmd",
+        "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "15m",
+      "shutdown_timeout": "1h",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

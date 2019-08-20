@@ -182,14 +182,14 @@
             <RegisteredOwner />
             <FirstLogonCommands>
                 <SynchronousCommand wcm:action="add">
-                    <Order>1</Order>
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f</CommandLine>
                     <Description>Disable UAC</Description>
+                    <Order>1</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <Order>2</Order>
                     <CommandLine>%COMSPEC% /c wmic useraccount where &quot;name=&apos;vagrant&apos;&quot; set PasswordExpires=FALSE</CommandLine>
                     <Description>Disable password expiration for vagrant user</Description>
+                    <Order>2</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f</CommandLine>
@@ -197,56 +197,56 @@
                     <Order>3</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <Order>98</Order>
-                    <CommandLine>%COMSPEC% /C A:\Enable-WinRM.cmd</CommandLine>
-                    <Description>Enable WinRM, Release to Packer</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>97</Order>
-                    <CommandLine>%COMSPEC% /C A:\Set-PowerPlan.cmd</CommandLine>
-                    <Description>Power settings for VMs</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>96</Order>
-                    <CommandLine>%COMSPEC% /C A:\Enable-RDP.cmd</CommandLine>
-                    <Description>Enable RDP</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>95</Order>
-                    <CommandLine>%COMSPEC% /C A:\Set-ExplorerConfig.cmd</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>99</Order>
-                    <Description>Packer Wait and Shutdown</Description>
-                    <CommandLine>powershell.exe -Version 1 -NoLogo -NoProfile -Command {$file = &quot;C:\users\vagrant\Desktop\delete-to-continue.txt&quot;;if (-Not (Test-Path $file)) {&quot;Remove me&quot;|Out-File $file};&quot;Wait until someone removes $file&quot;;while (Test-Path $file) {Start-Sleep -Seconds 10};&quot;Done waiting!&quot;} &amp;&amp; shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Shutdown&quot;</CommandLine>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
-                    <Order>24</Order>
-                    <CommandLine>%COMSPEC% /C A:\Install-WMF2.0.cmd</CommandLine>
-                    <Description>Install WMF 2.0</Description>
-                </SynchronousCommand>
-                <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff</CommandLine>
                     <Description>Supress network location Prompt</Description>
                     <Order>4</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <Order>20</Order>
                     <CommandLine>%COMSPEC% /C A:\Install-DotNet3.51.cmd</CommandLine>
+                    <Order>20</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <Order>22</Order>
+                    <CommandLine>%COMSPEC% /C A:\Install-WMF2.0.cmd</CommandLine>
+                    <Description>Install WMF 2.0</Description>
+                    <Order>21</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
                     <CommandLine>%COMSPEC% /C A:\Install-DotNet4.0.cmd</CommandLine>
+                    <Order>22</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%COMSPEC% /C A:\Install-WMF3.0.cmd</CommandLine>
                     <Description>Install WMF3.0</Description>
-                    <Order>26</Order>
+                    <Order>23</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
                     <Description>Set Powershell Execution Policy</Description>
-                    <Order>27</Order>
+                    <Order>30</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%COMSPEC% /C A:\Set-ExplorerConfig.cmd</CommandLine>
+                    <Order>95</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%COMSPEC% /C A:\Enable-RDP.cmd</CommandLine>
+                    <Description>Enable RDP</Description>
+                    <Order>96</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%COMSPEC% /C A:\Set-PowerPlan.cmd</CommandLine>
+                    <Description>Power settings for VMs</Description>
+                    <Order>97</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>%COMSPEC% /C A:\Enable-WinRM.cmd</CommandLine>
+                    <Description>Enable WinRM, Release to Packer</Description>
+                    <Order>98</Order>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <Description>Packer Wait and Shutdown</Description>
+                    <CommandLine>shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Shutdown&quot;</CommandLine>
+                    <Order>99</Order>
                 </SynchronousCommand>
             </FirstLogonCommands>
         </component>
