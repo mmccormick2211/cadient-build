@@ -25,10 +25,6 @@
   "provisioners": [
     {
       "type": "windows-shell",
-      "script": "scripts/Configure-PSExecutionPolicy.cmd"
-    },
-    {
-      "type": "windows-shell",
       "script": "scripts/Install-Chocolatey.cmd"
     },
     {
@@ -60,9 +56,9 @@
         3010
       ],
       "inline": [
-        "#choco config  set    --name='proxy'         --value=''",
-        "#choco config  set    --name='proxyUser'     --value=''",
-        "#choco config  set    --name='proxyPassword' --value=''",
+        "#choco config  set     --name='proxy'         --value=''",
+        "#choco config  set     --name='proxyUser'     --value=''",
+        "#choco config  set     --name='proxyPassword' --value=''",
         "choco feature enable  --name='usePackageExitCodes'",
         "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
         "choco feature enable  --name='stopOnFirstPackageFailure'",
@@ -86,10 +82,9 @@
         3010
       ],
       "inline": [
-        "clist -l",
-        "choco pin remove --yes --acceptlicense --nocolor --name=dotnetfx",
-        "choco upgrade dotnetfx --yes --acceptlicense --nocolor --version=4.5.2.0",
-        "choco pin add --yes --acceptlicense --nocolor --name=dotnetfx --version=4.5.2.0"
+        "choco pin remove --name=dotnetfx --yes --acceptlicense",
+        "choco upgrade dotnetfx --version=4.5.2.0 --yes --acceptlicense ",
+        "choco pin add --name=dotnetfx --version=4.5.2.0 --yes --acceptlicense "
       ]
     },
     {
@@ -108,15 +103,14 @@
         3010
       ],
       "inline": [
-        "clist -l",
-        "choco upgrade 7zip --acceptlicense --yes --no-progress",
-        "choco upgrade choco-shortcuts-winconfig --acceptlicense --yes --no-progress",
-        "choco upgrade choco-cleaner --acceptlicense --yes --no-progress",
-        "choco upgrade flashplayerplugin-disable-updates-winconfig --acceptlicense --yes --no-progress",
-        "choco upgrade sysinternals --acceptlicense --yes --no-progress",
-        "choco upgrade ultradefrag --acceptlicense --yes --no-progress",
-        "choco upgrade vmware-tools --acceptlicense --yes --no-progress",
-        "clist -l"
+        "choco upgrade 7zip --acceptlicense --yes",
+        "choco upgrade abc-update --acceptlicense --yes",
+        "choco upgrade choco-shortcuts-winconfig --acceptlicense --yes",
+        "choco upgrade choco-cleaner --acceptlicense --yes",
+        "choco upgrade flashplayerplugin-disable-updates-winconfig --acceptlicense --yes",
+        "choco upgrade sysinternals --acceptlicense --yes",
+        "choco upgrade ultradefrag --acceptlicense --yes",
+        "choco upgrade vmware-tools --acceptlicense --yes"
       ]
     },
     {

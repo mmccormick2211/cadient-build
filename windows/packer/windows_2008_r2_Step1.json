@@ -1,5 +1,5 @@
 {
-  "description": "",
+  "description": "Base install of Windows 2008R2 SP1 x64 with WMF3.0 and .NET 4.5.2",
   "min_packer_version": "",
   "variables": {
     "mirror": "http://download.microsoft.com/download",
@@ -8,8 +8,10 @@
     "iso_checksum": "beed231a34e90e1dd9a04b3afabec31d62ce3889",
     "iso_checksum_type": "sha1",
     "template": "win2008r2-std-1base",
-    "headless": "false",
     "box_basename": "windows-2008r2",
+    "guest_os_type": "windows7srv-64",
+
+    "headless": "false",
     "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "cpus": "2",
     "memory": "2048",
@@ -28,19 +30,26 @@
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "vm_name": "packer-{{user `template`}}-vmware",
+      "guest_os_type": "{{user `guest_os_type`}}",
       "headless": "{{user `headless`}}",
-      "guest_os_type": "windows7srv-64",
       "cpus": "{{user `cpus` }}",
       "cores": 1,
       "memory": "{{user `memory` }}",
       "disk_size": "{{user `disk_size`}}",
+      "disk_adapter_type": "lsisas1068",
       "disk_type_id": "4",
       "parallel": "NONE",
       "serial": "NONE",
       "sound": false,
       "usb": false,
       "floppy_files": [
-        "answer_files/2008_r2/Autounattend.xml"
+        "answer_files/2008r2/Autounattend.xml",
+
+        "scripts/Install-WMF3.0.cmd",
+        "scripts/Set-ExplorerConfig.cmd",
+        "scripts/Enable-RDP.cmd",
+        "scripts/Set-PowerPlan.cmd",
+        "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "shutdown_timeout": "15m",

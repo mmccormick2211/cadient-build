@@ -8,8 +8,9 @@
     "iso_checksum": "49D0D6917C1256FE81048D414FA473BBC76A8724",
     "iso_checksum_type": "sha1",
     "template": "win2008x32-std-1base",
-    "headless": "false",
     "box_basename": "windows-2008x32",
+    "guest_os_type": "longhorn",
+    "headless": "false",
     "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "cpus": "2",
     "memory": "2048",
@@ -19,7 +20,6 @@
     {
       "type": "vmware-iso",
       "name": "{{user `box_basename`}}",
-      "guest_os_type": "longhorn",
       "communicator": "winrm",
       "winrm_username": "vagrant",
       "winrm_password": "vagrant",
@@ -29,6 +29,7 @@
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "vm_name": "packer-{{user `template`}}-vmware",
+      "guest_os_type": "{{user `guest_os_type`}}",
       "headless": "{{user `headless`}}",
       "cpus": "{{user `cpus` }}",
       "cores": 1,
@@ -51,7 +52,7 @@
         "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "2h",
+      "shutdown_timeout": "15m",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

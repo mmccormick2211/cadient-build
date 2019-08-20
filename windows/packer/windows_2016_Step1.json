@@ -1,5 +1,5 @@
 {
-  "description": "Base install of Windows 2016 Standard",
+  "description": "Base install of Windows 2016 Standard (1607)",
   "min_packer_version": "",
   "variables": {
     "mirror": "http://download.microsoft.com/download",
@@ -8,8 +8,9 @@
     "iso_checksum": "772700802951b36c8cb26a61c040b9a8dc3816a3",
     "iso_checksum_type": "sha1",
     "template": "win2016-std-1base",
-    "headless": "false",
     "box_basename": "windows-2016",
+    "guest_os_type": "windows9srv-64",
+    "headless": "false",
     "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "cpus": "2",
     "memory": "2048",
@@ -28,8 +29,8 @@
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
       "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "vm_name": "packer-{{user `template`}}-vmware",
+      "guest_os_type": "{{user `guest_os_type`}}",
       "headless": "{{user `headless`}}",
-      "guest_os_type": "windows9srv-64",
       "cpus": "{{user `cpus` }}",
       "cores": 1,
       "memory": "{{user `memory` }}",
@@ -48,7 +49,7 @@
         "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "1h",
+      "shutdown_timeout": "15m",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

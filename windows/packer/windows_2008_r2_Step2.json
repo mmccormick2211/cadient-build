@@ -24,19 +24,25 @@
   ],
   "provisioners": [
     {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))"
-      ]
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
+    },
+    {
+      "pause_before": "10m",
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "breakpoint",
+      "note": "Check for Chocolatey...."
     },
     {
       "type": "powershell",
@@ -56,11 +62,13 @@
         "choco feature enable  --name='usePackageExitCodes'",
         "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
         "choco feature enable  --name='stopOnFirstPackageFailure'",
-        "choco feature enable  --name='logWithoutColor'"
+        "choco feature enable  --name='logWithoutColor'",
+        "choco feature disable --name='showDownloadProgress'"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -74,17 +82,14 @@
         3010
       ],
       "inline": [
-        "choco upgrade 7zip --acceptlicense --yes --no-progress",
-        "choco upgrade choco-shortcuts-winconfig --acceptlicense --yes --no-progress",
-        "choco upgrade choco-cleaner --acceptlicense --yes --no-progress",
-        "choco upgrade flashplayerplugin-disable-updates-winconfig --acceptlicense --yes --no-progress",
-        "choco upgrade sysinternals --acceptlicense --yes --no-progress",
-        "choco upgrade ultradefrag --acceptlicense --yes --no-progress",
-        "choco upgrade vmware-tools --acceptlicense --yes --no-progress"
+        "choco pin remove --name=dotnetfx --yes --acceptlicense",
+        "choco upgrade dotnetfx --version=4.5.2.0 --yes --acceptlicense ",
+        "choco pin add --name=dotnetfx --version=4.5.2.0 --yes --acceptlicense "
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -98,66 +103,21 @@
         3010
       ],
       "inline": [
-        "choco upgrade kb976932 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade kb3035131 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco upgrade kb3033929 --acceptlicense --yes --no-progress"
-      ]
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
+        "choco upgrade 7zip --acceptlicense --yes",
+        "choco upgrade abc-update --acceptlicense --yes",
+        "choco upgrade choco-shortcuts-winconfig --acceptlicense --yes",
+        "choco upgrade choco-cleaner --acceptlicense --yes",
+        "choco upgrade flashplayerplugin-disable-updates-winconfig --acceptlicense --yes",
+        "choco upgrade sysinternals --acceptlicense --yes",
+        "choco upgrade ultradefrag --acceptlicense --yes",
+        "choco upgrade vmware-tools --acceptlicense --yes",
         "choco install   NetFx3                        --source='WindowsFeatures'",
         "choco uninstall MicrosoftWindowsPowerShellISE --source='WindowsFeatures'"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -171,11 +131,15 @@
         3010
       ],
       "inline": [
-        "choco upgrade dotnetfx --version 4.5.2.0 --acceptlicense --yes --no-progress"
+        "ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB976932,KB3035131,KB3033929,KB2506143,KB2852386 /Exit:Restart"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "breakpoint"
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -189,11 +153,12 @@
         3010
       ],
       "inline": [
-        "choco upgrade powershell --version 4.0.20141001 --acceptlicense --yes --no-progress"
+        "choco upgrade powershell --version 4.0.20141001 --acceptlicense --yes"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -207,23 +172,12 @@
         3010
       ],
       "inline": [
-        "choco upgrade powershell --acceptlicense --yes --no-progress"
+        "choco upgrade powershell --acceptlicense --yes"
       ]
     },
     {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "inline": [
-        "$TempInstall = \"$env:temp\\KB2852386.msu\"",
-        "$url = 'https://download.microsoft.com/download/2/A/3/2A3FD850-E45F-47D4-AFF8-8048333CBA7D/Windows6.1-KB2852386-v2-x64.msu'",
-        "Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $TempInstall",
-        "Start-Process -FilePath $TempInstall -Args \"/quiet\" -Wait"
-      ]
-    },
-    {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "windows-update",
@@ -234,7 +188,8 @@
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     }
   ],
   "post-processors": [
