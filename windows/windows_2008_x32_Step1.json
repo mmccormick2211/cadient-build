@@ -51,7 +51,7 @@
         "scripts/Enable-WinRM.cmd"
       ],
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "shutdown_timeout": "1h",
+      "shutdown_timeout": "2h",
       "vmx_remove_ethernet_interfaces": false
     }
   ],

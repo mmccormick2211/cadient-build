@@ -19,7 +19,7 @@ ECHO Finished downloading "%KB2506146%"
 :INSTALL
 ECHO Installing "%KB2506146%"
 START "Install WMF3.0" /D %TEMP% /WAIT "%KB2506146%" /QUIET /NORESTART
-shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot""
+shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot"
 EXIT /B
 
 

@@ -25,15 +25,30 @@
   "provisioners": [
     {
       "type": "windows-shell",
-      "inline": [
-        "@\"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \"Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"
-      ]
+      "script": "scripts/Configure-PSExecutionPolicy.cmd"
     },
     {
       "type": "windows-shell",
       "script": "scripts/Install-Chocolatey.cmd"
     },
     {
+      "pause_before": "10m",
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "breakpoint",
+      "note": "Check for Chocolatey...."
+    },
+    {
       "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
@@ -45,17 +60,19 @@
         3010
       ],
       "inline": [
-        "#choco config  set     --name='proxy'         --value=''",
-        "#choco config  set     --name='proxyUser'     --value=''",
-        "#choco config  set     --name='proxyPassword' --value=''",
+        "#choco config  set    --name='proxy'         --value=''",
+        "#choco config  set    --name='proxyUser'     --value=''",
+        "#choco config  set    --name='proxyPassword' --value=''",
         "choco feature enable  --name='usePackageExitCodes'",
         "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
         "choco feature enable  --name='stopOnFirstPackageFailure'",
-        "choco feature enable  --name='logWithoutColor'"
+        "choco feature enable  --name='logWithoutColor'",
+        "choco feature disable --name='showDownloadProgress'"
       ]
     },
     {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     },
     {
       "type": "powershell",
@@ -69,52 +86,42 @@
         3010
       ],
       "inline": [
+        "clist -l",
+        "choco pin remove --yes --acceptlicense --nocolor --name=dotnetfx",
+        "choco upgrade dotnetfx --yes --acceptlicense --nocolor --version=4.5.2.0",
+        "choco pin add --yes --acceptlicense --nocolor --name=dotnetfx --version=4.5.2.0"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "clist -l",
         "choco upgrade 7zip --acceptlicense --yes --no-progress",
         "choco upgrade choco-shortcuts-winconfig --acceptlicense --yes --no-progress",
         "choco upgrade choco-cleaner --acceptlicense --yes --no-progress",
         "choco upgrade flashplayerplugin-disable-updates-winconfig --acceptlicense --yes --no-progress",
         "choco upgrade sysinternals --acceptlicense --yes --no-progress",
         "choco upgrade ultradefrag --acceptlicense --yes --no-progress",
-        "choco upgrade vmware-tools --acceptlicense --yes --no-progress"
+        "choco upgrade vmware-tools --acceptlicense --yes --no-progress",
+        "clist -l"
       ]
     },
     {
-      "type": "windows-restart"
-    },
-    {
-      "type": "windows-shell",
-      "script": "scripts/Choco-InstallDotNet.cmd"
-    },
-    {
-      "type": "windows-restart"
-    },
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "inline": [
-        "choco pin remove --yes --acceptlicense --nocolor --name=powershell",
-        "choco pin add --yes --acceptlicense --nocolor --name=powershell --version=3.0.20121027",
-        "choco upgrade powershell --yes --acceptlicense --nocolor"
-      ]
-    },
-    {
-      "type": "windows-update",
-      "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
-      "filters": [
-        "exclude:$_.Title -like '*Preview*'",
-        "include:$true"
-      ]
-    },
-    {
-      "type": "windows-restart"
+      "type": "windows-restart",
+      "timeout": "20m"
     }
   ],
   "post-processors": [

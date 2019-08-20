@@ -29,7 +29,7 @@ ECHO Installing "%KB968930%"
 START "Install WMF 2.0" /D %TEMP% /WAIT "%KB968930%" /QUIET /NORESTART
 ECHO Installing "%KB960568%"
 START "Install BITS4.0" /D %TEMP% /WAIT "%KB960568%" /QUIET /NORESTART
-shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot""
+shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot"
 EXIT /B
 
 :DOWNLOAD_FILE

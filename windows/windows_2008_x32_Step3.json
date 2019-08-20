@@ -1,14 +1,14 @@
 {
   "variables": {
-    "template": "win2008r2-std-3gold",
+    "template": "win2008x32-std-3gold",
     "headless": "false",
-    "box_basename": "windows-2008r2",
+    "box_basename": "windows-2008x32",
     "build_timestamp": "{{isotime \"20060102150405\"}}"
   },
   "builders": [
     {
       "type": "vmware-vmx",
-      "source_path": "D:/PACKER_BUILDS/packer-win2008r2-std-2updates-vmware/packer-win2008r2-std-2updates-vmware.vmx",
+      "source_path": "D:/PACKER_BUILDS/packer-win2008x32-std-2updates-vmware/packer-win2008x32-std-2updates-vmware.vmx",
       "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
       "communicator": "winrm",
       "winrm_username": "vagrant",
@@ -23,44 +23,6 @@
     }
   ],
   "provisioners": [
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "scripts": [
-        "scripts/Cleanup-Disk.ps1"
-      ],
-      "remote_path":"C:/windows/temp/cleanup-disk.ps1"
-    },
-    {
-      "type": "windows-restart"},
-    {
-      "type": "powershell",
-      "elevated_user": "vagrant",
-      "elevated_password": "vagrant",
-      "valid_exit_codes": [
-        0,
-        1605,
-        1614,
-        1641,
-        3010
-      ],
-      "scripts": [
-        "scripts/Cleanup-Part2.ps1"
-      ]
-    },
-    {
-      "type": "windows-restart",
-      "check_registry": true,
-      "restart_timeout": "6h"
-    },
     {
       "type": "powershell",
       "elevated_user": "vagrant",
