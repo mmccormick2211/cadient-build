@@ -107,6 +107,10 @@
       "timeout": "20m"
     },
     {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
       "type": "powershell",
       "elevated_user": "vagrant",
       "elevated_password": "vagrant",
