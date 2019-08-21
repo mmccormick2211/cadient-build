@@ -28,21 +28,8 @@
       "script": "scripts/Install-Chocolatey.cmd"
     },
     {
-      "pause_before": "10m",
       "type": "windows-restart",
       "timeout": "20m"
-    },
-    {
-      "type": "windows-shell",
-      "script": "scripts/Install-Chocolatey.cmd"
-    },
-    {
-      "type": "windows-restart",
-      "timeout": "20m"
-    },
-    {
-      "type": "breakpoint",
-      "note": "Check for Chocolatey...."
     },
     {
       "type": "powershell",
