@@ -43,8 +43,8 @@
       "sound": false,
       "usb": false,
       "floppy_files": [
-        "answer_files/2008r2/Autounattend.xml",
-
+        "answer_files/2008_r2/Autounattend.xml",
+        "scripts/Install-DotNet4.0.cmd",
         "scripts/Install-WMF3.0.cmd",
         "scripts/Set-ExplorerConfig.cmd",
         "scripts/Enable-RDP.cmd",
