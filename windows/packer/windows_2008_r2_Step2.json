@@ -126,9 +126,6 @@
       ]
     },
     {
-      "type": "breakpoint"
-    },
-    {
       "type": "windows-restart",
       "timeout": "20m"
     },
