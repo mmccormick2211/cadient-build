@@ -230,7 +230,7 @@
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <Description>Packer Reboot</Description>
-                    <CommandLine>shutdown /s /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
+                    <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
                     <Order>99</Order>
                     <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
