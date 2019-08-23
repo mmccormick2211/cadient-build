@@ -1,0 +1,117 @@
+{
+  "variables": {
+    "template": "win2008r2-std-2updates",
+    "headless": "false",
+    "box_basename": "windows-2008r2",
+    "build_timestamp": "{{isotime \"20060102150405\"}}"
+  },
+  "builders": [
+    {
+      "type": "vmware-vmx",
+      "source_path": "D:/PACKER_BUILDS/packer-win2008r2-std-1base-vmware/packer-win2008r2-std-1base-vmware.vmx",
+      "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "display_name": "packer-{{user `template`}}-vmware",
+      "vm_name": "packer-{{user `template`}}-vmware",
+      "headless": "{{user `headless`}}",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "shutdown_timeout": "15m",
+      "vmx_remove_ethernet_interfaces": false
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "#choco config  set     --name='proxy'         --value=''",
+        "#choco config  set     --name='proxyUser'     --value=''",
+        "#choco config  set     --name='proxyPassword' --value=''",
+        "choco feature enable  --name='usePackageExitCodes'",
+        "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
+        "choco feature enable  --name='stopOnFirstPackageFailure'",
+        "choco feature enable  --name='logWithoutColor'",
+        "choco feature disable --name='showDownloadProgress'",
+        "#",
+        "choco upgrade   7zip                          --acceptlicense --yes",
+        "choco install   NetFx3                        --source='WindowsFeatures'",
+        "choco uninstall MicrosoftWindowsPowerShellISE --source='WindowsFeatures'"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco pin remove --name=dotnetfx --yes --acceptlicense",
+        "choco upgrade dotnetfx --version=4.5.2.0 --yes --acceptlicense ",
+        "choco pin add --name=dotnetfx --version=4.5.2.0 --yes --acceptlicense "
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco upgrade powershell --version 4.0.20141001 --acceptlicense --yes"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "windows-update",
+      "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$true"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    }
+  ]
+}
