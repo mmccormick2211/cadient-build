@@ -1,21 +1,26 @@
 {
-  "description": "Base install of Windows 2008R2 SP1 x64 with WMF3.0 and .NET 4.5.2",
+  "description": "Base install of Windows 2008R2 SP1 x64",
   "min_packer_version": "",
   "variables": {
+    "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "mirror": "http://download.microsoft.com/download",
     "mirror_directory": "7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7",
     "iso_name": "7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
     "iso_checksum": "beed231a34e90e1dd9a04b3afabec31d62ce3889",
     "iso_checksum_type": "sha1",
-    "template": "win2008r2-std-1base",
-    "box_basename": "windows-2008r2",
+
+    "box_basename": "win2008r2",
+    "template": "{{user `box_basename`}}-std-1base",
+    "vm_name": "packer-{{user `template`}}-vmware",
     "guest_os_type": "windows7srv-64",
 
     "headless": "false",
-    "build_timestamp": "{{isotime \"20060102-1504\"}}",
     "cpus": "2",
     "memory": "2048",
-    "disk_size": "32767"
+    "disk_size": "32767",
+
+    "packer_output": "D:/PACKER_BUILDS",
+    "vagrant_output":"D:/VAGRANT_BOXES"
   },
   "builders": [
     {
@@ -28,8 +33,8 @@
       "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "output_directory": "D:/PACKER_BUILDS/packer-{{user `template`}}-vmware",
-      "vm_name": "packer-{{user `template`}}-vmware",
+      "output_directory": "{{user `packer_output`}}/packer-{{user `template`}}-vmware",
+      "vm_name": "{{user `vm_name`}}",
       "guest_os_type": "{{user `guest_os_type`}}",
       "headless": "{{user `headless`}}",
       "cpus": "{{user `cpus` }}",
@@ -45,7 +50,6 @@
       "floppy_files": [
         "answer_files/2008_r2/Autounattend.xml",
         "scripts/Install-DotNet4.0.cmd",
-        "scripts/Install-WMF3.0.cmd",
         "scripts/Set-ExplorerConfig.cmd",
         "scripts/Enable-RDP.cmd",
         "scripts/Set-PowerPlan.cmd",
@@ -57,11 +61,13 @@
     }
   ],
   "post-processors": [
-    {
-      "type": "compress",
-      "output": "D:/VAGRANT_BOXES/{{user `template`}}-vmware.zip",
-      "compression_level": 9,
-      "keep_input_artifact": true
-    }
-  ]
+		[
+			{
+				"type": "vagrant",
+				"keep_input_artifact": true,
+				"output": "{{user `vagrant_output`}}/{{user `template` }}-{{.Provider}}.box",
+				"vagrantfile_template": "vagrant/vagrantfile-{{user `box_basename`}}.template"
+			}
+		]
+	]
 }

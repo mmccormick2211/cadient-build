@@ -1,0 +1,172 @@
+{
+  "description": "Updated install of Windows 2008R2 SP1 x64 with WMF4.0 and .NET 4.5.2",
+  "min_packer_version": "",
+  "variables": {
+    "build_timestamp": "{{isotime \"20060102-1504\"}}",
+    "mirror": "http://download.microsoft.com/download",
+    "mirror_directory": "7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7",
+    "iso_name": "7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso",
+    "iso_checksum": "beed231a34e90e1dd9a04b3afabec31d62ce3889",
+    "iso_checksum_type": "sha1",
+
+    "box_basename": "win2008r2",
+    "template": "{{user `box_basename`}}-std-1base",
+    "vm_name": "packer-{{user `template`}}-vmware",
+    "guest_os_type": "windows7srv-64",
+
+    "headless": "false",
+    "cpus": "2",
+    "memory": "2048",
+    "disk_size": "32767",
+    
+    "packer_output": "D:/PACKER_BUILDS",
+    "vagrant_output":"D:/VAGRANT_BOXES"
+  },
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "name": "{{user `box_basename`}}",
+      "communicator": "winrm",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "12h",
+      "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "output_directory": "{{user `output_directory`}}/packer-{{user `template`}}-vmware",
+      "vm_name": "{{user `vm_name`}}",
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "headless": "{{user `headless`}}",
+      "cpus": "{{user `cpus` }}",
+      "cores": 1,
+      "memory": "{{user `memory` }}",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_adapter_type": "lsisas1068",
+      "disk_type_id": "4",
+      "parallel": "NONE",
+      "serial": "NONE",
+      "sound": false,
+      "usb": false,
+      "floppy_files": [
+        "answer_files/2008_r2/Autounattend.xml",
+        "scripts/Install-DotNet4.0.cmd",
+        "scripts/Set-ExplorerConfig.cmd",
+        "scripts/Enable-RDP.cmd",
+        "scripts/Set-PowerPlan.cmd",
+        "scripts/Enable-WinRM.cmd"
+      ],
+      "shutdown_command": "C:\\WINDOWS\\PACKER\\Packer Shutdown.cmd",
+      "shutdown_timeout": "1h",
+      "vmx_remove_ethernet_interfaces": false
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "windows-shell",
+      "script": "scripts/Install-Chocolatey.cmd"
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "#choco config  set     --name='proxy'         --value=''",
+        "#choco config  set     --name='proxyUser'     --value=''",
+        "#choco config  set     --name='proxyPassword' --value=''",
+        "choco feature enable  --name='usePackageExitCodes'",
+        "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
+        "choco feature enable  --name='stopOnFirstPackageFailure'",
+        "choco feature enable  --name='logWithoutColor'",
+        "choco feature disable --name='showDownloadProgress'",
+        "#",
+        "choco upgrade   7zip                          --acceptlicense --yes",
+        "choco upgrade   ABC-Update                    --acceptlicense --yes",
+        "choco install   NetFx3                        --source='WindowsFeatures'",
+        "choco uninstall MicrosoftWindowsPowerShellISE --source='WindowsFeatures'"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "ABC-Update.exe /A:Install "
+    
+        {
+          "type": "powershell",
+          "elevated_user": "vagrant",
+          "elevated_password": "vagrant",
+          "valid_exit_codes": [
+            0,
+            1605,
+            1614,
+            1641,
+            3010
+          ],
+          "inline": [
+            "choco pin remove --name=dotnetfx --yes --acceptlicense",
+        "choco upgrade dotnetfx --version=4.5.2.0 --yes --acceptlicense ",
+        "choco pin add --name=dotnetfx --version=4.5.2.0 --yes --acceptlicense "
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "inline": [
+        "choco upgrade powershell --version 4.0.20141001 --acceptlicense --yes"
+      ]
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    },
+    {
+      "type": "windows-update",
+      "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
+      "filters": [
+        "exclude:$_.Title -like '*Preview*'",
+        "include:$true"
+      ],
+      "update_limit": 25
+    },
+    {
+      "type": "windows-restart",
+      "timeout": "20m"
+    }
+  ]
+}

@@ -182,43 +182,44 @@
                     <Order>4</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Install-DotNet4.0.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Install-DotNet4.0.cmd</CommandLine>
                     <Order>22</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Install-WMF3.0.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Install-WMF3.0.cmd</CommandLine>
                     <Description>Install WMF3.0</Description>
                     <Order>23</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
+                    <CommandLine>START "" /WAIT "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
                     <Description>Set Powershell Execution Policy</Description>
                     <Order>30</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Set-ExplorerConfig.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Set-ExplorerConfig.cmd</CommandLine>
                     <Order>95</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Enable-RDP.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Enable-RDP.cmd</CommandLine>
                     <Description>Enable RDP</Description>
                     <Order>96</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Set-PowerPlan.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Set-PowerPlan.cmd</CommandLine>
                     <Description>Power settings for VMs</Description>
                     <Order>97</Order>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
-                    <CommandLine>%COMSPEC% /C A:\Enable-WinRM.cmd</CommandLine>
+                    <CommandLine>START "" /WAIT A:\Enable-WinRM.cmd</CommandLine>
                     <Description>Enable WinRM, Release to Packer</Description>
                     <Order>98</Order>
                 </SynchronousCommand>
+                <!--
                 <SynchronousCommand wcm:action="add">
                     <Description>Packer Reboot</Description>
                     <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
                     <Order>99</Order>
-                </SynchronousCommand>
+                </SynchronousCommand>-->
             </FirstLogonCommands>
             <OOBE>
                 <HideEULAPage>true</HideEULAPage>
