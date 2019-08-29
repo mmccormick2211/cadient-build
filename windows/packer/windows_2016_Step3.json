@@ -35,6 +35,19 @@
         3010
       ],
       "script": "scripts/save_shutdown_command.ps1"
+    },
+    {
+      "type": "powershell",
+      "elevated_user": "vagrant",
+      "elevated_password": "vagrant",
+      "valid_exit_codes": [
+        0,
+        1605,
+        1614,
+        1641,
+        3010
+      ],
+      "script": "scripts/save_shutdown_command.ps1"
     }
   ],
   "post-processors": [

@@ -60,7 +60,7 @@ $unattendedXML = @"
 </unattend>
 "@
 
-Set-Content -Path "$($packerWindowsDir)\PackerShutdown.bat" -Value $shutdownCmd
+Set-Content -Path "$($packerWindowsDir)\PackerShutdown.cmd" -Value $shutdownCmd
 Set-Content -Path "$($packerWindowsDir)\unattended.xml" -Value $unattendedXML
 
 # will run on first boot
