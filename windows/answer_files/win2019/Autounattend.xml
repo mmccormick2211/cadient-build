@@ -2,18 +2,36 @@
 <unattend xmlns="urn:schemas-microsoft-com:unattend">
     <servicing>
         <package action="configure">
-            <assemblyIdentity name="Microsoft-Windows-Foundation-Package" version="6.1.7601.17514" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="" />
+            <assemblyIdentity name="Microsoft-Windows-Foundation-Package" version="10.0.17763.1" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="" />
+            <selection name="MicrosoftWindowsPowerShell" state="true" />
+            <selection name="MicrosoftWindowsPowerShellISE" state="false" />
+            <selection name="MicrosoftWindowsPowerShellRoot" state="true" />
+            <selection name="MicrosoftWindowsPowerShellV2" state="true" />
+            <selection name="NetFx3ServerFeatures" state="true" />
             <selection name="NetFx3" state="true" />
+            <selection name="NetFx4ServerFeatures" state="true" />
+            <selection name="NetFx4" state="true" />
+            <selection name="SearchEngine-Client-Package" state="false" />
+            <selection name="SMB1Protocol" state="true" />
+            <selection name="SMB1Protocol-Client" state="true" />
+            <selection name="SMB1Protocol-Server" state="true" />
+            <selection name="TelnetClient" state="true" />
+            <selection name="TFTP" state="true" />
+            <selection name="Windows-Defender" state="false" />
             <selection name="Xps-Foundation-Xps-Viewer" state="true" />
         </package>
     </servicing>
     <settings pass="windowsPE">
         <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SetupUILanguage>
+                <UILanguage>en-US</UILanguage>
+            </SetupUILanguage>
             <InputLocale>en-US</InputLocale>
             <SystemLocale>en-US</SystemLocale>
             <UILanguage>en-US</UILanguage>
             <UserLocale>en-US</UserLocale>
         </component>
+        <!-- look for drivers on floppy -->
         <component name="Microsoft-Windows-PnpCustomizationsWinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DriverPaths>
                 <PathAndCredentials wcm:action="add" wcm:keyValue="1">
@@ -27,13 +45,13 @@
                     <CreatePartitions>
                         <CreatePartition wcm:action="add">
                             <Order>1</Order>
-                            <Size>100</Size>
+                            <Size>500</Size>
                             <Type>Primary</Type>
                         </CreatePartition>
                         <CreatePartition wcm:action="add">
+                            <Extend>true</Extend>
                             <Order>2</Order>
                             <Type>Primary</Type>
-                            <Size>10000</Size>
                         </CreatePartition>
                     </CreatePartitions>
                     <ModifyPartitions>
@@ -44,10 +62,10 @@
                             <Label>System Reserved</Label>
                             <Order>1</Order>
                             <PartitionID>1</PartitionID>
+                            <TypeID>0x27</TypeID>
                         </ModifyPartition>
                         <ModifyPartition wcm:action="add">
                             <Active>true</Active>
-                            <Extend>true</Extend>
                             <Format>NTFS</Format>
                             <Label>OS</Label>
                             <Letter>C</Letter>
@@ -68,24 +86,54 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2008 R2 SERVERSTANDARD</Value>
+                            <Value>Windows Server 2019 SERVERSTANDARD</Value>
                         </MetaData>
                     </InstallFrom>
+                    <WillShowUI>Never</WillShowUI>
                     <InstallTo>
                         <DiskID>0</DiskID>
                         <PartitionID>2</PartitionID>
                     </InstallTo>
-                    <WillShowUI>OnError</WillShowUI>
                 </OSImage>
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <Key>YC6KT-GKW9T-YTKYR-T4X34-R7VHC</Key>
                     <WillShowUI>Never</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
+                <FullName>Cadient IT</FullName>
+                <Organization>Cadient LLC</Organization>
             </UserData>
             <EnableFirewall>false</EnableFirewall>
+        </component>
+    </settings>
+    <settings pass="offlineServicing">
+        <component name="Microsoft-Windows-LUA-Settings" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <EnableLUA>false</EnableLUA>
+        </component>
+        <component name="Microsoft-Windows-TabletPC-Platform-Input-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <TouchGate>0</TouchGate>
+        </component>
+        <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <fDenyTSConnections>false</fDenyTSConnections>
+        </component>
+        <component name="Microsoft-Windows-GPIOButtons" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ConvertibleSlateMode>1</ConvertibleSlateMode>
+        </component>
+        <component name="Microsoft-Windows-LUA-Settings" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></component>
+        <component name="Microsoft-Windows-TabletPC-Platform-Input-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></component>
+        <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></component>
+        <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DisableAntiSpyware>true</DisableAntiSpyware>
+        </component>
+    </settings>
+    <settings pass="generalize">
+        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipRearm>1</SkipRearm>
+        </component>
+        <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <PersistAllDeviceInstalls>false</PersistAllDeviceInstalls>
+            <DoNotCleanUpNonPresentDevices>false</DoNotCleanUpNonPresentDevices>
         </component>
     </settings>
     <settings pass="specialize">
@@ -103,32 +151,31 @@
             <IEHardenUser>false</IEHardenUser>
         </component>
         <component name="Microsoft-Windows-IE-InternetExplorer" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <FavoritesDelete>true</FavoritesDelete>
-            <EnableLinksBar>true</EnableLinksBar>
-            <DisableOOBAccelerators>true</DisableOOBAccelerators>
+            <BlockPopups>no</BlockPopups>
             <DisableFirstRunWizard>true</DisableFirstRunWizard>
-            <DisableDataExecutionPrevention>true</DisableDataExecutionPrevention>
+            <DisableOOBAccelerators>true</DisableOOBAccelerators>
+            <FavoritesDelete>true</FavoritesDelete>
+            <FavoritesOnTop>false</FavoritesOnTop>
+            <FilterLevel>Low</FilterLevel>
             <Home_Page>about:blank</Home_Page>
-            <IntranetCompatibilityMode>false</IntranetCompatibilityMode>
+            <MSCompatibilityMode>false</MSCompatibilityMode>
+            <LockToolbars>false</LockToolbars>
             <PlaySound>false</PlaySound>
-            <ShowInformationBar>true</ShowInformationBar>
-            <ShowLeftAddressToolbar>true</ShowLeftAddressToolbar>
-            <SuggestedSitesEnabled>false</SuggestedSitesEnabled>
-            <SmallCommandBarIcons>true</SmallCommandBarIcons>
-            <Window_Title_CN>Cadient Talent, LLC</Window_Title_CN>
             <SearchScopes>
                 <Scope wcm:action="add">
+                    <FaviconURL>http://www.google.com/favicon.ico</FaviconURL>
                     <ScopeDefault>true</ScopeDefault>
-                    <ScopeUrl>https://www.google.com/search?q={searchTerms}&amp;ie={inputEncoding?}&amp;oe={outputEncoding?}</ScopeUrl>
                     <ScopeDisplayName>Google</ScopeDisplayName>
                     <ScopeKey>Google</ScopeKey>
-                    <FaviconURL>http://www.google.com/favicon.ico</FaviconURL>
+                    <ScopeUrl>https://www.google.com/search?q={searchTerms}&amp;ie={inputEncoding?}&amp;oe={outputEncoding?}</ScopeUrl>
                     <SuggestionsURL>http://clients5.google.com/complete/search?q={searchTerms}&amp;client=ie8&amp;mw={ie:maxWidth}&amp;sh={ie:sectionHeight}&amp;rh={ie:rowHeight}&amp;inputencoding={inputEncoding}&amp;outputencoding={outputEncoding}</SuggestionsURL>
                 </Scope>
             </SearchScopes>
-        </component>
-        <component name="Microsoft-Windows-OutOfBoxExperience" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <DoNotOpenInitialConfigurationTasksAtLogon>true</DoNotOpenInitialConfigurationTasksAtLogon>
+            <ShowInformationBar>true</ShowInformationBar>
+            <ShowLeftAddressToolbar>true</ShowLeftAddressToolbar>
+            <SuggestedSitesEnabled>false</SuggestedSitesEnabled>
+            <Window_Title_CN>Cadient Talent, LLC</Window_Title_CN>
+            <IntranetCompatibilityMode>false</IntranetCompatibilityMode>
         </component>
         <component name="Microsoft-Windows-powercpl" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <PreferredPlan>8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</PreferredPlan>
@@ -154,6 +201,12 @@
         <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DisableAntiSpyware>true</DisableAntiSpyware>
         </component>
+        <component name="Microsoft-Windows-SQMApi" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <CEIPEnabled>0</CEIPEnabled>
+        </component>
+        <component name="Microsoft-Windows-GPIOButtons" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ConvertibleSlateMode>1</ConvertibleSlateMode>
+        </component>
     </settings>
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -166,70 +219,92 @@
                 <Username>vagrant</Username>
             </AutoLogon>
             <FirstLogonCommands>
+                <!--
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%COMSPEC% /c wmic useraccount where &quot;name=&apos;vagrant&apos;&quot; set PasswordExpires=FALSE</CommandLine>
                     <Description>Disable password expiration for vagrant user</Description>
-                    <Order>2</Order>
+                    <Order>10</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f</CommandLine>
                     <Description>Enable QuickEdit mode on console</Description>
-                    <Order>3</Order>
+                    <Order>11</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>%SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Network\ /v NewNetworkWindowOff</CommandLine>
                     <Description>Supress network location Prompt</Description>
-                    <Order>4</Order>
+                    <Order>12</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Install-DotNet4.0.cmd</CommandLine>
                     <Order>22</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Install-WMF3.0.cmd</CommandLine>
                     <Description>Install WMF3.0</Description>
                     <Order>23</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT "%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
                     <Description>Set Powershell Execution Policy</Description>
                     <Order>30</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
+                </SynchronousCommand>
+                <SynchronousCommand wcm:action="add">
+                    <CommandLine>C:\Windows\SysWOW64\cmd.exe /c powershell -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine -Force"</CommandLine>
+                    <Description>Set Execution Policy 32 Bit</Description>
+                    <Order>31</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Set-ExplorerConfig.cmd</CommandLine>
                     <Order>95</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Enable-RDP.cmd</CommandLine>
                     <Description>Enable RDP</Description>
                     <Order>96</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Set-PowerPlan.cmd</CommandLine>
                     <Description>Power settings for VMs</Description>
                     <Order>97</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
+		-->
                 <SynchronousCommand wcm:action="add">
                     <CommandLine>START "" /WAIT A:\Enable-WinRM.cmd</CommandLine>
                     <Description>Enable WinRM, Release to Packer</Description>
                     <Order>98</Order>
+                    <RequiresUserInput>true</RequiresUserInput>
                 </SynchronousCommand>
                 <!--
                 <SynchronousCommand wcm:action="add">
                     <Description>Packer Reboot</Description>
                     <CommandLine>shutdown /r /t 10 /f /d p:4:1 /c &quot;Packer Reboot&quot;</CommandLine>
                     <Order>99</Order>
-                </SynchronousCommand>-->
+                </SynchronousCommand>
+		-->
             </FirstLogonCommands>
             <OOBE>
                 <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
                 <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-                <NetworkLocation>Home</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
+                <UnattendEnableRetailDemo>false</UnattendEnableRetailDemo>
             </OOBE>
+            <TimeZone>UTC</TimeZone>
             <UserAccounts>
                 <AdministratorPassword>
-                    <Value>bwBwAGUAbgAxAHQAMgBwACEAQQBkAG0AaQBuAGkAcwB0AHIAYQB0AG8AcgBQAGEAcwBzAHcAbwByAGQA</Value>
                     <PlainText>false</PlainText>
                 </AdministratorPassword>
                 <LocalAccounts>
@@ -245,32 +320,24 @@
                     </LocalAccount>
                 </LocalAccounts>
             </UserAccounts>
-            <VisualEffects>
-                <FontSmoothing>Standard</FontSmoothing>
-            </VisualEffects>
             <WindowsFeatures>
+                <ShowInternetExplorer>true</ShowInternetExplorer>
                 <ShowMediaCenter>false</ShowMediaCenter>
                 <ShowWindowsMediaPlayer>false</ShowWindowsMediaPlayer>
-                <ShowInternetExplorer>true</ShowInternetExplorer>
             </WindowsFeatures>
-            <ShowWindowsLive>false</ShowWindowsLive>
             <RegisteredOrganization>Cadient IT</RegisteredOrganization>
             <RegisteredOwner>Cadient LLC</RegisteredOwner>
             <DoNotCleanTaskBar>false</DoNotCleanTaskBar>
             <BluetoothTaskbarIconEnabled>false</BluetoothTaskbarIconEnabled>
-            <TimeZone>UTC</TimeZone>
+            <ShowPowerButtonOnStartScreen>true</ShowPowerButtonOnStartScreen>
+            <SignInMode>1</SignInMode>
+            <DesktopOptimization>
+                <GoToDesktopOnSignIn>true</GoToDesktopOnSignIn>
+            </DesktopOptimization>
+        </component>
+        <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DisableAntiSpyware>true</DisableAntiSpyware>
         </component>
     </settings>
-    <settings pass="offlineServicing">
-        <component name="Microsoft-Windows-LUA-Settings" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <EnableLUA>false</EnableLUA>
-        </component>
-        <component name="Microsoft-Windows-TabletPC-Platform-Input-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <TouchGate>0</TouchGate>
-        </component>
-        <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <fDenyTSConnections>false</fDenyTSConnections>
-        </component>
-    </settings>
-    <cpi:offlineImage cpi:source="catalog:c:/users/michaelmccormick/github/windows-ps/wsim/eval-win2008r2/install_windows server 2008 r2 serverstandard.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="catalog:c:/users/michaelmccormick/github/windows-ps/wsim/eval-win2019/install_windows server 2019 serverstandard.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>

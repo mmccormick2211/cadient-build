@@ -1,6 +1,5 @@
 @ECHO OFF
 setlocal
-PING -n 121 127.0.0.1>nul
 
 :SETUP
 set "WMF2_URL=https://download.microsoft.com/download/F/9/E/F9EF6ACB-2BA8-4845-9C10-85FC4A69B207/Windows6.0-KB968930-x86.msu"
@@ -29,7 +28,6 @@ ECHO Installing "%KB968930%"
 START "Install WMF 2.0" /D %TEMP% /WAIT "%KB968930%" /QUIET /NORESTART
 ECHO Installing "%KB960568%"
 START "Install BITS4.0" /D %TEMP% /WAIT "%KB960568%" /QUIET /NORESTART
-shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot"
 EXIT /B
 
 :DOWNLOAD_FILE

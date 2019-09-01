@@ -17,7 +17,6 @@ ECHO Finished downloading "%TOINSTALL%"
 :INSTALL
 ECHO Installing "%TOINSTALL%"
 START "Install .NET 4.0" /D %TEMP% /WAIT "%TOINSTALL%" /passive /norestart
-shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot"
 EXIT /B
 
 

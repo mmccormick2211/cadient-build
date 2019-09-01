@@ -1,18 +1,11 @@
 @ECHO OFF
+ECHO.Configuring PowerShell Execution Policies...
 :: Set Powershell Execution Policy to "RemoteSigned" - OS Architecture Native
 %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
 :: Set Powershell Execution Policy - WOW64
 %SystemRoot%\SysWOW64\cmd.exe /c %SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -Command "Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Force"
 
-:: Enable UAC
-%SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 1 /f
-:: Disable UAC
-: %SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
-
-:: Disable computer password change
-%SystemRoot%\System32\reg.exe ADD HKLM\System\CurrentControlSet\Services\Netlogon\Parameters /v DisablePasswordChange /t REG_DWORD /d 1 /f
-:: Enable Console QuickEdit mode
-%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f
+ECHO.Configuring Explorer settings...
 :: Show all icons and notifications on the taskbar notification area
 %SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ /v EnableAutoTray /t REG_DWORD /d 0 /f
 :: Displays the full path in the address bar
@@ -36,6 +29,7 @@
 :: Disable Thumbnail Cache on network files
 %SystemRoot%\System32\reg.exe ADD HKCU\Software\Policies\Microsoft\Explorer\ /v DisableThumbsDBOnNetworkFolders /t REG_DWORD /d 1 /f
 
+ECHO.Configuring Power Settings...
 :: Set power configuration to High Performance
 %SystemRoot%\System32\powercfg.exe -setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 :: Don't blank monitor on AC
@@ -49,8 +43,13 @@
 :: Disable Hibernation Mode
 %SystemRoot%\System32\reg.exe ADD HKLM\SYSTEM\CurrentControlSet\Control\Power\ /v HibernateEnabled /t REG_DWORD /d 0 /f
 
+:: Enable UAC
+: %SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 1 /f
+:: Disable UAC
+: %SystemRoot%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f
+
 :: Disable AutoAdmin Logon
-%SystemRoot%\System32\reg.exe ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 0 /f
+: %SystemRoot%\System32\reg.exe ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 0 /f
 :: Enable AutoAdmin Logon
 : %SystemRoot%\System32\reg.exe ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 1 /f
 
@@ -79,5 +78,8 @@ schtasks /Change /TN "\Microsoft\Windows\Application Experience\Microsoft Compat
 :: Enable Command Prompt on Win+X Menu
 : %SystemRoot%\System32\reg.exe ADD HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced /V DontUsePowerShellOnWinX /T REG_DWORD /D 1 /F
 
+:: Disable computer password change
+%SystemRoot%\System32\reg.exe ADD HKLM\System\CurrentControlSet\Services\Netlogon\Parameters /v DisablePasswordChange /t REG_DWORD /d 1 /f
 
-taskkill /f /im explorer.exe && start explorer.exe
+:: Enable Console QuickEdit mode
+%SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f
