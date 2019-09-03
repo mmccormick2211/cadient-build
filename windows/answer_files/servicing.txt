@@ -1,0 +1,23 @@
+    <servicing>
+        <package action="configure">
+            <assemblyIdentity name="Microsoft-Windows-Foundation-Package" version="10.0.17763.1" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="" />
+            <selection name="MicrosoftWindowsPowerShell" state="true" />
+            <selection name="MicrosoftWindowsPowerShellRoot" state="true" />
+            <selection name="MicrosoftWindowsPowerShellV2" state="true" />
+            <selection name="NetFx3ServerFeatures" state="true" />
+            <selection name="NetFx3" state="true" />
+            <selection name="NetFx4ServerFeatures" state="true" />
+            <selection name="NetFx4" state="true" />
+            
+            <selection name="SMB1Protocol" state="true" />
+            <selection name="SMB1Protocol-Client" state="true" />
+            <selection name="SMB1Protocol-Server" state="true" />
+            <selection name="TelnetClient" state="true" />
+            <selection name="TFTP" state="true" />
+            <selection name="Xps-Foundation-Xps-Viewer" state="true" />
+
+            <selection name="MicrosoftWindowsPowerShellISE" state="false" />
+            <selection name="SearchEngine-Client-Package" state="false" />
+            <selection name="Windows-Defender" state="false" />
+        </package>
+    </servicing>

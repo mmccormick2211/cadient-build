@@ -1,0 +1,6 @@
+        [{
+            "type": "vagrant",
+            "keep_input_artifact": true,
+            "output": "{{user `vagrant_output`}}/{{user `template` }}-{{.Provider}}.box",
+            "vagrantfile_template": "vagrant/vagrantfile-{{user `box_basename`}}.template"
+        }]

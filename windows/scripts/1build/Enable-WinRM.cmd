@@ -20,3 +20,5 @@ CALL winrm set winrm/config/listener?Address=*+Transport=HTTP @{Port="5985"}
 net stop winrm
 %SystemRoot%\System32\sc.exe config winrm start= auto
 net start winrm
+
+shutdown /r /t 10 /f /d p:4:1 /c "Packer Reboot"

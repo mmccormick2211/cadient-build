@@ -68,7 +68,7 @@
                     <InstallFrom>
                         <MetaData wcm:action="add">
                             <Key>/IMAGE/NAME</Key>
-                            <Value>Windows Server 2008 R2 SERVERSTANDARD</Value>
+                            <Value>Windows Server 2019 SERVERSTANDARD</Value>
                         </MetaData>
                     </InstallFrom>
                     <WillShowUI>Never</WillShowUI>
@@ -80,7 +80,6 @@
             </ImageInstall>
             <UserData>
                 <ProductKey>
-                    <Key>YC6KT-GKW9T-YTKYR-T4X34-R7VHC</Key>
                     <WillShowUI>Never</WillShowUI>
                 </ProductKey>
                 <AcceptEula>true</AcceptEula>
@@ -96,6 +95,16 @@
         </component>
         <component name="Microsoft-Windows-TerminalServices-LocalSessionManager" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <fDenyTSConnections>false</fDenyTSConnections>
+        </component>
+        <component name="Microsoft-Windows-Embedded-KeyboardFilterService" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DisableKeyboardFilterForAdministrators>true</DisableKeyboardFilterForAdministrators>
+            <ForceOffAccessibility>true</ForceOffAccessibility>
+        </component>
+        <component name="Microsoft-Windows-GPIOButtons" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ConvertibleSlateMode>1</ConvertibleSlateMode>
+        </component>
+        <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DisableAntiSpyware>true</DisableAntiSpyware>
         </component>
     </settings>
     <settings pass="generalize">
@@ -114,6 +123,38 @@
         <component name="Microsoft-Windows-Audio-VolumeControl" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <EnableVolumeControlWhileLocked>false</EnableVolumeControlWhileLocked>
         </component>
+        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <RunSynchronous>
+                <!--
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>CALL A:\Install-DotNet3.51.cmd</Path>
+                    <Order>20</Order>
+                    <WillReboot>Always</WillReboot>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>CALL A:\Install-DotNet4.0.cmd</Path>
+                    <Order>21</Order>
+                    <WillReboot>Always</WillReboot>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>CALL A:\Install-WMF2.0.cmd</Path>
+                    <Order>23</Order>
+                    <WillReboot>Always</WillReboot>
+                </RunSynchronousCommand>
+                <RunSynchronousCommand wcm:action="add">
+                    <Path>CALL A:\Install-WMF3.0.cmd</Path>
+                    <Order>23</Order>
+                    <WillReboot>Always</WillReboot>
+                </RunSynchronousCommand>
+                -->
+                <RunSynchronousCommand wcm:action="add">
+                    <Order>2</Order>
+                    <Path>A:\Enable-WinRM.cmd</Path>
+                    <Description>Enable WinRM and Release to Packer</Description>
+                    <WillReboot>Never</WillReboot>
+                </RunSynchronousCommand>
+            </RunSynchronous>
+        </component>
         <component name="Microsoft-Windows-ErrorReportingCore" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DisableWER>1</DisableWER>
         </component>
@@ -125,12 +166,12 @@
             <BlockPopups>no</BlockPopups>
             <DisableFirstRunWizard>true</DisableFirstRunWizard>
             <DisableOOBAccelerators>true</DisableOOBAccelerators>
-            <EnableLinksBar>true</EnableLinksBar>
             <FavoritesDelete>true</FavoritesDelete>
             <FavoritesOnTop>false</FavoritesOnTop>
             <FilterLevel>Low</FilterLevel>
             <Home_Page>about:blank</Home_Page>
             <IntranetCompatibilityMode>false</IntranetCompatibilityMode>
+            <MSCompatibilityMode>false</MSCompatibilityMode>
             <LockToolbars>false</LockToolbars>
             <PlaySound>false</PlaySound>
             <SearchScopes>
@@ -145,12 +186,8 @@
             </SearchScopes>
             <ShowInformationBar>true</ShowInformationBar>
             <ShowLeftAddressToolbar>true</ShowLeftAddressToolbar>
-            <SmallCommandBarIcons>true</SmallCommandBarIcons>
             <SuggestedSitesEnabled>false</SuggestedSitesEnabled>
             <Window_Title_CN>Cadient Talent, LLC</Window_Title_CN>
-        </component>
-        <component name="Microsoft-Windows-OutOfBoxExperience" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <DoNotOpenInitialConfigurationTasksAtLogon>true</DoNotOpenInitialConfigurationTasksAtLogon>
         </component>
         <component name="Microsoft-Windows-powercpl" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <PreferredPlan>8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c</PreferredPlan>
@@ -184,6 +221,9 @@
         <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="NonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DisableAntiSpyware>true</DisableAntiSpyware>
         </component>
+        <component name="Microsoft-Windows-GPIOButtons" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ConvertibleSlateMode>1</ConvertibleSlateMode>
+        </component>
     </settings>
     <settings pass="oobeSystem">
         <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -196,16 +236,22 @@
                 <Username>vagrant</Username>
             </AutoLogon>
             <BluetoothTaskbarIconEnabled>false</BluetoothTaskbarIconEnabled>
+            <DesktopOptimization>
+                <GoToDesktopOnSignIn>true</GoToDesktopOnSignIn>
+            </DesktopOptimization>
             <DoNotCleanTaskBar>false</DoNotCleanTaskBar>
             <OOBE>
                 <HideEULAPage>true</HideEULAPage>
+                <HideLocalAccountScreen>true</HideLocalAccountScreen>
+                <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+                <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
                 <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
-                <NetworkLocation>Home</NetworkLocation>
                 <ProtectYourPC>3</ProtectYourPC>
+                <UnattendEnableRetailDemo>false</UnattendEnableRetailDemo>
             </OOBE>
             <RegisteredOrganization>Cadient IT</RegisteredOrganization>
             <RegisteredOwner>Cadient LLC</RegisteredOwner>
-            <ShowWindowsLive>false</ShowWindowsLive>
+            <ShowPowerButtonOnStartScreen>true</ShowPowerButtonOnStartScreen>
             <TimeZone>UTC</TimeZone>
             <UserAccounts>
                 <AdministratorPassword>
@@ -232,15 +278,11 @@
                 <ShowMediaCenter>false</ShowMediaCenter>
                 <ShowWindowsMediaPlayer>false</ShowWindowsMediaPlayer>
             </WindowsFeatures>
-            <FirstLogonCommands>
-                <SynchronousCommand wcm:action="add">
-                    <Order>99</Order>
-                    <CommandLine>A:\Enable-WinRM.cmd</CommandLine>
-                    <Description>Enable WinRM and Release to Packer</Description>
-                    <RequiresUserInput>true</RequiresUserInput>
-                </SynchronousCommand>
-            </FirstLogonCommands>
+            <SignInMode>1</SignInMode>
+        </component>
+        <component name="Security-Malware-Windows-Defender" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <DisableAntiSpyware>true</DisableAntiSpyware>
         </component>
     </settings>
-    <cpi:offlineImage cpi:source="catalog:c:/users/michaelmccormick/github/windows-ps/wsim/eval-win2008r2/install_windows server 2008 r2 serverstandard.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+    <cpi:offlineImage cpi:source="catalog:c:/users/michaelmccormick/github/windows-ps/wsim/eval-win2019/install_windows server 2019 serverstandard.clg" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
 </unattend>

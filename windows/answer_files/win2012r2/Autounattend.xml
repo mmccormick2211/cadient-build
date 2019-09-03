@@ -98,12 +98,12 @@
         </component>
     </settings>
     <settings pass="generalize">
-        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <SkipRearm>1</SkipRearm>
-        </component>
         <component name="Microsoft-Windows-PnpSysprep" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <PersistAllDeviceInstalls>false</PersistAllDeviceInstalls>
             <DoNotCleanUpNonPresentDevices>false</DoNotCleanUpNonPresentDevices>
+        </component>
+        <component name="Microsoft-Windows-Security-SPP" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <SkipRearm>1</SkipRearm>
         </component>
     </settings>
     <settings pass="specialize">
@@ -112,38 +112,6 @@
         </component>
         <component name="Microsoft-Windows-Audio-VolumeControl" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <EnableVolumeControlWhileLocked>false</EnableVolumeControlWhileLocked>
-        </component>
-        <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-            <RunSynchronous>
-                <!--
-                <RunSynchronousCommand wcm:action="add">
-                    <Path>CALL A:\Install-DotNet3.51.cmd</Path>
-                    <Order>20</Order>
-                    <WillReboot>Always</WillReboot>
-                </RunSynchronousCommand>
-                <RunSynchronousCommand wcm:action="add">
-                    <Path>CALL A:\Install-DotNet4.0.cmd</Path>
-                    <Order>21</Order>
-                    <WillReboot>Always</WillReboot>
-                </RunSynchronousCommand>
-                <RunSynchronousCommand wcm:action="add">
-                    <Path>CALL A:\Install-WMF2.0.cmd</Path>
-                    <Order>23</Order>
-                    <WillReboot>Always</WillReboot>
-                </RunSynchronousCommand>
-                <RunSynchronousCommand wcm:action="add">
-                    <Path>CALL A:\Install-WMF3.0.cmd</Path>
-                    <Order>23</Order>
-                    <WillReboot>Always</WillReboot>
-                </RunSynchronousCommand>
-                -->
-                <RunSynchronousCommand wcm:action="add">
-                    <Order>2</Order>
-                    <Path>A:\Enable-WinRM.cmd</Path>
-                    <Description>Enable WinRM and Release to Packer</Description>
-                    <WillReboot>Never</WillReboot>
-                </RunSynchronousCommand>
-            </RunSynchronous>
         </component>
         <component name="Microsoft-Windows-ErrorReportingCore" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <DisableWER>1</DisableWER>
@@ -224,6 +192,14 @@
                 <GoToDesktopOnSignIn>true</GoToDesktopOnSignIn>
             </DesktopOptimization>
             <DoNotCleanTaskBar>false</DoNotCleanTaskBar>
+            <FirstLogonCommands>
+                <SynchronousCommand wcm:action="add">
+                    <Order>99</Order>
+                    <CommandLine>A:\Enable-WinRM.cmd</CommandLine>
+                    <Description>Enable WinRM and Release to Packer</Description>
+                    <RequiresUserInput>true</RequiresUserInput>
+                </SynchronousCommand>
+            </FirstLogonCommands>
             <OOBE>
                 <HideEULAPage>true</HideEULAPage>
                 <HideLocalAccountScreen>true</HideLocalAccountScreen>
