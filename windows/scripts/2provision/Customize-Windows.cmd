@@ -83,3 +83,5 @@ schtasks /Change /TN "\Microsoft\Windows\Application Experience\Microsoft Compat
 
 :: Enable Console QuickEdit mode
 %SystemRoot%\System32\reg.exe ADD HKCU\Console /v QuickEdit /t REG_DWORD /d 1 /f
+
+EXIT /b

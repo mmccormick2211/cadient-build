@@ -49,7 +49,7 @@
         ],
         "shutdown_command": "C:\\WINDOWS\\PACKER\\Packer Shutdown.cmd",
         "shutdown_timeout": "15m",
-        "vmx_remove_ethernet_interfaces": false
+        "vmx_remove_ethernet_interfaces": true
     }],
     "provisioners": [{
             "pause_before": "2m",
@@ -83,6 +83,10 @@
                 "choco feature disable --name='showDownloadProgress'",
                 "choco upgrade 7zip    --acceptlicense --yes"
             ]
+        },
+        {
+            "type": "windows-restart",
+            "timeout": "20m"
         },
         {
             "type": "powershell",
@@ -124,6 +128,39 @@
             ]
         },
         {
+            "type": "windows-restart",
+            "timeout": "20m"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1605,
+                1614,
+                1641,
+                3010
+            ],
+            "inline": [
+                "'############### Base Applications Installation ###############'",
+                "choco upgrade dotnetfx --version 4.5.2.0 --acceptlicense --yes",
+                "choco upgrade powershell                 --acceptlicense --yes",
+                "choco upgrade sysinternals               --acceptlicense --yes",
+                "#choco upgrade chef-client                --acceptlicense --yes",
+                "#choco upgrade puppet-agent               --acceptlicense --yes",
+                "#choco upgrade salt-minion                --acceptlicense --yes",
+                "choco upgrade vmware-tools               --acceptlicense --yes",
+                "choco upgrade ultra-defrag               --acceptlicense --yes",
+                "#"
+            ]
+        },
+        {
+            "type": "breakpoint",
+            "note": "foo bar baz",
+            "disable": "false"
+        },
+        {
             "type": "windows-update",
             "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
             "filters": [
@@ -135,7 +172,65 @@
         {
             "type": "breakpoint",
             "note": "foo bar baz",
-            "disable": "true"
+            "disable": "false"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1605,
+                1614,
+                1641,
+                3010
+            ],
+            "script": "scripts/99sysprep/Cleanup-Part2.ps1"
+        },
+        {
+            "type": "windows-restart",
+            "timeout": "20m"
+        },
+        {
+            "type": "breakpoint",
+            "note": "foo bar baz",
+            "disable": "false"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1605,
+                1614,
+                1641,
+                3010
+            ],
+            "script": "scripts/99sysprep/save_shutdown_command.ps1"
         }
+    ],
+    "post-processors": [{
+            "type": "vagrant-vmware-ovf",
+            "compression_level": 9
+        },
+        [{
+                "type": "vsphere",
+                "datacenter": "PDX",
+                "cluster": "Production",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "insecure": true,
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614",
+                "vm_name": "{{user `vm_name`}}"
+            },
+            {
+                "type": "vsphere-template",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "insecure": true,
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614"
+            }
+        ]
     ]
 }
