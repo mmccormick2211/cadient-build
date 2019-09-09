@@ -40,7 +40,7 @@
         "serial": "NONE",
         "sound": false,
         "usb": false,
-        "vmx_remove_ethernet_interfaces": true,
+        "vmx_remove_ethernet_interfaces": false,
         "floppy_files": [
             "answer_files/{{user `box_basename`}}/Autounattend.xml",
             "scripts/1build/Enable-WinRM.cmd"
@@ -49,8 +49,8 @@
         "winrm_username": "vagrant",
         "winrm_password": "vagrant",
         "winrm_timeout": "12h",
-        "shutdown_command": "cmd.exe",
-        "shutdown_timeout": "4h"
+        "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+        "shutdown_timeout": "15m"
     }],
     "provisioners": [{
             "pause_before": "2m",
@@ -158,62 +158,34 @@
             "timeout": "20m"
         },
         {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "##### 2018-05 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4103723)",
-                "#",
-                "ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB4103723",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB4103723",
-                "ABC-Update.exe /A:Install /S:MSUpdate /R:N /N:*Servicing Stack Update*",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "20m"
-        },
-        {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "##### 2019-07 Servicing Stack Update for Windows Server 2016 for x64-based Systems (KB4509091)",
-                "##### or latest Servicing Stack for OS",
-                "#",
-                "ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB4509091",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB4509091",
-                "ABC-Update.exe /A:Install /S:MSUpdate /R:N /N:*Servicing Stack Update*",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "20m"
-        },
-        {
             "type": "breakpoint",
             "note": "foo bar baz",
             "disable": "false"
         }
     ],
-    "post-processors": [{
-        "type": "vagrant",
-        "output": "{{user `vagrant_output`}}/{{user `vm_name`}}.box"
-    }]
+    "post-processors": [
+        [{
+                "type": "vsphere",
+                "datacenter": "PDX",
+                "cluster": "Production",
+                "datastore": "[prd_fc_ds09]",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614",
+                "vm_name": "{{user `vm_name`}}",
+                "vm_folder": "{{user `vm_name`}}",
+                "vm_network": "23-svcapp2",
+                "disk_mode": "thin",
+                "insecure": true,
+                "keep_input_artifact": true
+            },
+            {
+                "type": "vsphere-template",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "insecure": true,
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614"
+            }
+        ]
+    ]
 }

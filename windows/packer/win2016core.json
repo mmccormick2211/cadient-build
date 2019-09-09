@@ -22,6 +22,10 @@
     "builders": [{
         "type": "vmware-iso",
         "name": "{{user `box_basename`}}",
+        "communicator": "winrm",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_timeout": "12h",
         "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
         "iso_checksum": "{{user `iso_checksum`}}",
         "iso_checksum_type": "{{user `iso_checksum_type`}}",
@@ -40,23 +44,18 @@
         "serial": "NONE",
         "sound": false,
         "usb": false,
-        "vmx_remove_ethernet_interfaces": true,
         "floppy_files": [
             "answer_files/{{user `box_basename`}}/Autounattend.xml",
             "scripts/1build/Enable-WinRM.cmd"
         ],
-        "communicator": "winrm",
-        "winrm_username": "vagrant",
-        "winrm_password": "vagrant",
-        "winrm_timeout": "12h",
-        "shutdown_command": "cmd.exe",
-        "shutdown_timeout": "4h"
+        "shutdown_command": "C:\\WINDOWS\\PACKER\\Packer Shutdown.cmd",
+        "shutdown_timeout": "15m",
+        "vmx_remove_ethernet_interfaces": true
     }],
     "provisioners": [{
             "pause_before": "2m",
             "type": "windows-shell",
             "scripts": [
-                "scripts/2provision/Install-VagrantSSL.cmd",
                 "scripts/2provision/Remove-SystemDriveLetter.cmd",
                 "scripts/2provision/Customize-Windows.cmd",
                 "scripts/2provision/Install-Chocolatey.cmd"
@@ -106,16 +105,22 @@
                 "choco install   MicrosoftWindowsPowerShellRoot --source='WindowsFeatures'",
                 "choco install   MicrosoftWindowsPowerShell     --source='WindowsFeatures'",
                 "choco install   MicrosoftWindowsPowerShellV2   --source='WindowsFeatures'",
+                "#choco install   Microsoft-Windows-Subsystem-Linux --source='WindowsFeatures'",
                 "choco install   NetFx3ServerFeatures           --source='WindowsFeatures'",
                 "choco install   NetFx3                         --source='WindowsFeatures'",
                 "choco install   NetFx4ServerFeatures           --source='WindowsFeatures'",
                 "choco install   NetFx4                         --source='WindowsFeatures'",
                 "choco install   SMB1Protocol                   --source='WindowsFeatures'",
+                "#choco install   SMB1Protocol-Client            --source='WindowsFeatures'",
+                "#choco install   SMB1Protocol-Server            --source='WindowsFeatures'",
                 "choco install   TelnetClient                   --source='WindowsFeatures'",
                 "choco install   TFTP                           --source='WindowsFeatures'",
+                "#choco install   Xps-Viewer                     --source='WindowsFeatures'",
                 "choco install   Xps-Foundation-Xps-Viewer      --source='WindowsFeatures'",
                 "#",
                 "choco uninstall MicrosoftWindowsPowerShellISE  --source='WindowsFeatures'",
+                "#choco uninstall Indexing-Service-Package       --source='WindowsFeatures'",
+                "#choco uninstall SearchEngine-Server-Package    --source='WindowsFeatures'",
                 "choco uninstall SearchEngine-Client-Package    --source='WindowsFeatures'",
                 "choco uninstall Windows-Defender               --source='WindowsFeatures'",
                 "choco uninstall Windows-Defender-Gui           --source='WindowsFeatures'",
@@ -148,8 +153,6 @@
                 "choco upgrade sysinternals               --acceptlicense --yes",
                 "choco upgrade ultradefrag                --acceptlicense --yes",
                 "choco upgrade vmware-tools               --acceptlicense --yes",
-                "choco upgrade abc-update                 --acceptlicense --yes",
-                "#iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/DarwinJS/ChocoPackages/master/openssh/InstallChoco_and_win32-openssh_with_server.ps1'))",
                 "#"
             ]
         },
@@ -158,53 +161,13 @@
             "timeout": "20m"
         },
         {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
+            "type": "windows-update",
+            "search_criteria": "AutoSelectOnWebSites=1 and IsInstalled=0",
+            "filters": [
+                "exclude:$_.Title -like '*Preview*'",
+                "include:$true"
             ],
-            "inline": [
-                "##### 2018-05 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4103723)",
-                "#",
-                "ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB4103723",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB4103723",
-                "ABC-Update.exe /A:Install /S:MSUpdate /R:N /N:*Servicing Stack Update*",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "20m"
-        },
-        {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "##### 2019-07 Servicing Stack Update for Windows Server 2016 for x64-based Systems (KB4509091)",
-                "##### or latest Servicing Stack for OS",
-                "#",
-                "ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB4509091",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB4509091",
-                "ABC-Update.exe /A:Install /S:MSUpdate /R:N /N:*Servicing Stack Update*",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "20m"
+            "update_limit": 25
         },
         {
             "type": "breakpoint",
@@ -214,6 +177,6 @@
     ],
     "post-processors": [{
         "type": "vagrant",
-        "output": "{{user `vagrant_output`}}/{{user `vm_name`}}.box"
+        "output": "{{user `vagrant_output`}}/{{user `vm_name`}}"
     }]
 }
