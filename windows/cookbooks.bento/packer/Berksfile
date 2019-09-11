@@ -1,3 +1,0 @@
-source 'https://supermarket.chef.io'
-metadata
-cookbook 'vmware-tools', '~> 2.1.0'

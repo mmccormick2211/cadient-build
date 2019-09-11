@@ -208,7 +208,7 @@
     "post-processors": [{
             "type": "shell-local",
             "inline": [
-                "ovftool --annotation=\"Base install of Windows 2016 Standard (1607)\" --compress=9 --diskMode=thin --noImageFiles --overwrite --prop:vendor=\"Cadient IT\"  --prop:vendorUrl=\"https://cadienttalent.com\" --sourceType=VMX --targetType=OVA \"{{user `packer_output`}}/{{user `vm_name`}}/{{user `vm_name`}}.vmx\" \"{{user `vagrant_output`}}/{{user `vm_name`}}.ova\""
+                "ovftool --annotation=\"Base install of Windows 2016 Standard (1607)\" --diskMode=thin --noImageFiles --overwrite --prop:vendor=\"Cadient IT\"  --prop:vendorUrl=\"https://cadienttalent.com\" --sourceType=VMX --targetType=OVA \"{{user `packer_output`}}/{{user `vm_name`}}/{{user `vm_name`}}.vmx\" \"{{user `vagrant_output`}}/{{user `vm_name`}}.ova\""
             ]
         },
         {

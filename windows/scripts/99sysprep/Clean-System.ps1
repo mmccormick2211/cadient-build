@@ -1,8 +1,20 @@
-"##### Disabling AutoLogon..."
-try { reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 0 /f } catch { }
+try { 
+    "##### Disabling AutoLogon..."
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /d 0 /f 
+}
+catch { }
 
-"##### Cleaning SxS..."
-Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+try { 
+    "##### Disabling Update Services..."
+    Stop-Service -Name wuauserv -Force
+}
+catch { }
+
+try {
+    "##### Cleaning SxS..."
+    Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
+}
+catch { }
 
 @(
     "$env:localappdata\Nuget",
@@ -22,25 +34,32 @@ Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
         }
         catch { $global:error.RemoveAt(0) }
     }
+
 }
 
-"##### Clearing Event Logs..."
-try { Clear-EventLog -LogName (GEt-EventLog -List).log } catch { }
+try { 
+    "##### Clearing Event Logs..."
+    Clear-EventLog -LogName (GEt-EventLog -List).log 
+}
+catch { }
 
-"##### Running UltraDefrag..."
 try {
+    "##### Running UltraDefrag..."
     Start-Process -FilePath "C:\Program Files\UltraDefrag\udefrag.exe" -ArgumentList '--optimize', '--repeat C:' -Wait
 }
 catch { }
-"##### Removing UltraDefrag..."
+
 try {
-    Start-Process -FilePath "choco.exe" -ArgumentList 'uninstall', 'ultradefrag', '--yes' -Wait
+    "##### Running SDelete..."
+    Start-Process -FilePath 'reg.exe' -ArgumentList 'ADD HKCU\Software\Sysinternals\SDelete', '/v EulaAccepted', '/t REG_DWORD', '/d 1', '/f' -Wait
+    Start-Process -FilePath 'sdelete.exe' -ArgumentList '-q', '-z', 'C:' -Wait
 }
 catch { }
 
-"##### Running SDelete..."
+"##### Restarting Update Services..."
+Start-Service -Name wuauserv
 try {
-    Start-Process -FilePath 'reg.exe' -ArgumentList 'ADD HKCU\Software\Sysinternals\SDelete', '/v EulaAccepted', '/t REG_DWORD', '/d 1', '/f' -Wait
-    Start-Process -FilePath 'sdelete.exe' -ArgumentList '-q', '-z', 'C:' -Wait
+    "##### Removing UltraDefrag..."
+    Start-Process -FilePath "choco.exe" -ArgumentList 'uninstall', 'ultradefrag', '--yes' -Wait
 }
 catch { }
