@@ -3,7 +3,7 @@ New-Item -Path $packerWindowsDir -ItemType Directory -Force
 
 # final shutdown command
 $shutdownCmd = @"
-netsh advfirewall firewall set rule name="WinRM-HTTP" new action=block
+:: netsh advfirewall firewall set rule name="WinRM-HTTP" new action=block
 C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /unattend:C:/Windows/packer/unattended.xml /quiet /shutdown
 "@
 
@@ -62,6 +62,11 @@ $unattendedXML = @"
 
 Set-Content -Path "$($packerWindowsDir)\PackerShutdown.cmd" -Value $shutdownCmd
 Set-Content -Path "$($packerWindowsDir)\unattended.xml" -Value $unattendedXML
+
+## Return WinRM to pristine state on shutdown
+## https://github.com/DarwinJS/Undo-WinRMConfig
+### Invoke-Expression (invoke-webrequest -uri 'https://raw.githubusercontent.com/DarwinJS/Undo-WinRMConfig/master/Undo-WinRMConfig.ps1')
+choco install undo-winrmconfig-during-shutdown --acceptlicense --yes
 
 # will run on first boot
 # https://technet.microsoft.com/en-us/library/cc766314(v=ws.10).aspx

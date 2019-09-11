@@ -34,13 +34,13 @@ try {
 catch { }
 "##### Removing UltraDefrag..."
 try {
-    Start-Process -FilePath "choco.exe" -ArgumentList 'uninstall','ultradefrag','--yes' -Wait
+    Start-Process -FilePath "choco.exe" -ArgumentList 'uninstall', 'ultradefrag', '--yes' -Wait
 }
 catch { }
 
 "##### Running SDelete..."
 try {
-  Start-Process -FilePath 'reg.exe' -ArgumentList 'ADD HKCU\Software\Sysinternals\SDelete','/v EulaAccepted','/t REG_DWORD','/d 1','/f' -Wait
-  Start-Process -FilePath 'sdelete.exe' -ArgumentList '-q','-z','C:' -Wait
+    Start-Process -FilePath 'reg.exe' -ArgumentList 'ADD HKCU\Software\Sysinternals\SDelete', '/v EulaAccepted', '/t REG_DWORD', '/d 1', '/f' -Wait
+    Start-Process -FilePath 'sdelete.exe' -ArgumentList '-q', '-z', 'C:' -Wait
 }
 catch { }

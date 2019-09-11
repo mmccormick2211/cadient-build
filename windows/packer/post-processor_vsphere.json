@@ -1,0 +1,27 @@
+{
+    "post-processors": [
+        [{
+                "type": "vsphere",
+                "datacenter": "PDX",
+                "cluster": "Production",
+                "datastore": "[prd_fc_ds09]",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614",
+                "vm_name": "{{user `vm_name`}}",
+                "vm_folder": "{{user `vm_name`}}",
+                "vm_network": "23-svcapp2",
+                "disk_mode": "thin",
+                "insecure": true,
+                "keep_input_artifact": true
+            },
+            {
+                "type": "vsphere-template",
+                "host": "prd-vmw-vc1.corp.unicru.com",
+                "insecure": true,
+                "username": "mmccormick1@unicru.com",
+                "password": "Amber614"
+            }
+        ]
+    ]
+}

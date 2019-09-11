@@ -1,0 +1,9 @@
+Found Windows update (2018-05-10; 1271.31 MB): 2018-05 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4103723)
+Found Windows update (2019-07-09; 11.55 MB): 2019-07 Servicing Stack Update for Windows Server 2016 for x64-based Systems (KB4509091)
+
+Found Windows update (2019-08-13; 44.17 MB): Windows Malicious Software Removal Tool x64 - August 2019 (KB890830)
+
+
+    Missing     | 2019-07-16 12:00 | KB4507459 | REV.200 | 2019-07 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4507459)
+    Missing     | 2019-08-13 12:00 | KB890830 | REV.200 | Windows Malicious Software Removal Tool x64 - August 2019 (KB890830)
+    Missing     | 2019-08-17 12:00 | KB4512495 | REV.201 | 2019-08 Cumulative Update for Windows Server 2016 for x64-based Systems (KB4512495)
