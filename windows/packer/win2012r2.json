@@ -28,6 +28,7 @@
         "output_directory": "{{user `packer_output`}}/{{user `vm_name`}}",
         "vm_name": "{{user `vm_name`}}",
         "guest_os_type": "{{user `guest_os_type`}}",
+        "version": 10,
         "headless": "{{user `headless`}}",
         "cpus": "{{user `cpus` }}",
         "cores": 1,

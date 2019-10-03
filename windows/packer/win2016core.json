@@ -28,6 +28,7 @@
         "output_directory": "{{user `packer_output`}}/{{user `vm_name`}}",
         "vm_name": "{{user `vm_name`}}",
         "guest_os_type": "{{user `guest_os_type`}}",
+        "version": 10,
         "headless": "{{user `headless`}}",
         "cpus": "{{user `cpus` }}",
         "cores": 1,
@@ -74,9 +75,9 @@
             ],
             "inline": [
                 "'############### Chocolatey Package Manager Configuration Block ###############'",
-                "#choco config  set     --name='proxy'         --value=''",
-                "#choco config  set     --name='proxyUser'     --value=''",
-                "#choco config  set     --name='proxyPassword' --value=''",
+                "choco config  set     --name='proxy'         --value='pdxproxy.dmz.unicru.com:8080'",
+                "choco config  set     --name='proxyUser'     --value='svc_proxy'",
+                "choco config  set     --name='proxyPassword' --value='P2ss4PROXY'",
                 "choco feature enable  --name='usePackageExitCodes'",
                 "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
                 "choco feature enable  --name='stopOnFirstPackageFailure'",
@@ -161,7 +162,7 @@
             "elevated_user": "vagrant",
             "elevated_password": "vagrant",
             "valid_exit_codes": [
-                0, 1, 11, 50, 51,
+                0,
                 1605,
                 1614,
                 1641,
@@ -184,7 +185,7 @@
             "elevated_user": "vagrant",
             "elevated_password": "vagrant",
             "valid_exit_codes": [
-                0, 1, 11, 50, 51,
+                0,
                 1605,
                 1614,
                 1641,
