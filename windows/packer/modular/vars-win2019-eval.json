@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "mirror": "https://software-download.microsoft.com/download",
+        "mirror_directory": "sg",
+        "iso_name": "17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+        "iso_checksum": "91e3a2f1acc39af21353c7cc105c799494d7539f",
+        "iso_checksum_type": "sha1",
+        "box_basename": "win2019",
+        "template": "{{user `box_basename`}}-std-1base",
+        "vm_name": "packer-{{user `template`}}-vmware",
+        "guest_os_type": "windows9srv-64",
+        }
+}

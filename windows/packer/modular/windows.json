@@ -1,0 +1,79 @@
+{
+    "description": "Base install of Windows multi-version",
+    "min_packer_version": "",
+
+    "builders": [{
+        "type": "vmware-iso",
+        "name": "{{user `box_basename`}}",
+        "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+        "iso_checksum": "{{user `iso_checksum`}}",
+        "iso_checksum_type": "{{user `iso_checksum_type`}}",
+        "output_directory": "{{user `packer_output`}}/{{user `vm_name`}}",
+        "vm_name": "{{user `vm_name`}}",
+        "guest_os_type": "{{user `guest_os_type`}}",
+        "version": 10,
+        "headless": "{{user `headless`}}",
+        "cpus": "{{user `cpus` }}",
+        "cores": 1,
+        "memory": "{{user `memory` }}",
+        "network": "NAT",
+        "disk_size": "{{user `disk_size`}}",
+        "disk_adapter_type": "lsisas1068",
+        "disk_type_id": "4",
+        "parallel": "NONE",
+        "serial": "NONE",
+        "sound": false,
+        "usb": false,
+        "vmx_remove_ethernet_interfaces": true,
+        "floppy_files": [
+            "answer_files/{{user `box_basename`}}/Autounattend.xml",
+            "scripts/1build/Enable-WinRM.cmd"
+        ],
+        "communicator": "winrm",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_timeout": "12h",
+        "shutdown_command": "C:/windows/packer/PackerShutdown.cmd",
+        "shutdown_timeout": "4h"
+    }],
+    "provisioners": [{
+            "pause_before": "5m",
+            "type": "windows-shell",
+            "scripts": [
+                "scripts/2provision/Remove-SystemDriveLetter.cmd",
+                "scripts/2provision/Configure-Windows.cmd"
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "timeout": "20m"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1605,
+                1614,
+                1641,
+                3010
+            ],
+            "scripts": [
+                "scripts/99sysprep/Clean-System.ps1",
+                "scripts/99sysprep/save_shutdown_command.ps1"
+            ]
+        }
+    ],
+    "post-processors": [{
+            "type": "shell-local",
+            "inline": [
+                "ovftool --annotation=\"Base install of {{user \" --diskMode=thin --noImageFiles --overwrite --prop:vendor=\"Cadient IT\"  --prop:vendorUrl=\"https://cadienttalent.com\" --sourceType=VMX --targetType=OVA \"{{user `packer_output`}}/{{user `vm_name`}}/{{user `vm_name`}}.vmx\" \"{{user `vagrant_output`}}/{{user `vm_name`}}.ova\""
+            ]
+        },
+        {
+            "type": "vagrant",
+            "output": "{{user `vagrant_output`}}/{{user `vm_name`}}.box"
+        }
+    ]
+}

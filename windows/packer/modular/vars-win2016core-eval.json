@@ -1,0 +1,13 @@
+{
+    "variables": {
+        "mirror": "https://software-download.microsoft.com",
+        "mirror_directory": "download/pr",
+        "iso_name": "Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+        "iso_checksum": "772700802951b36c8cb26a61c040b9a8dc3816a3",
+        "iso_checksum_type": "sha1",
+        "box_basename": "win2016core",
+        "template": "{{user `box_basename`}}-std-base",
+        "vm_name": "packer-{{user `template`}}-vmware",
+        "guest_os_type": "windows9srv-64",
+    }
+}

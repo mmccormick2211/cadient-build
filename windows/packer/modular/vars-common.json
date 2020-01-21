@@ -1,0 +1,11 @@
+{
+    "variables": {
+        "build_timestamp": "{{isotime \"20060102-1504\"}}",
+        "cpus": "2",
+        "disk_size": "32767",
+        "headless": "false",
+        "memory": "4096",
+        "packer_output": "D:/PACKER_BUILDS",
+        "vagrant_output": "D:/VAGRANT_BOXES",
+    }
+}
