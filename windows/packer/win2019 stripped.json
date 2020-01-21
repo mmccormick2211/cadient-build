@@ -1,0 +1,109 @@
+{
+    "description": "Base install of Windows 2019 Standard (1903)",
+    "min_packer_version": "",
+    "variables": {
+        "build_timestamp": "{{isotime \"20060102-1504\"}}",
+        "mirror": "https://software-download.microsoft.com/download",
+        "mirror_directory": "sg",
+        "iso_name": "17763.253.190108-0006.rs5_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso",
+        "iso_checksum": "91e3a2f1acc39af21353c7cc105c799494d7539f",
+        "iso_checksum_type": "sha1",
+        "box_basename": "win2019",
+        "template": "{{user `box_basename`}}-std-1base",
+        "vm_name": "packer-{{user `template`}}-vmware",
+        "guest_os_type": "windows9srv-64",
+        "headless": "false",
+        "cpus": "2",
+        "memory": "4096",
+        "disk_size": "32767",
+        "packer_output": "D:/PACKER_BUILDS",
+        "vagrant_output": "D:/VAGRANT_BOXES"
+    },
+    "builders": [{
+        "type": "vmware-iso",
+        "name": "{{user `box_basename`}}",
+        "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+        "iso_checksum": "{{user `iso_checksum`}}",
+        "iso_checksum_type": "{{user `iso_checksum_type`}}",
+        "output_directory": "{{user `packer_output`}}/{{user `vm_name`}}",
+        "vm_name": "{{user `vm_name`}}",
+        "guest_os_type": "{{user `guest_os_type`}}",
+        "version": 10,
+        "headless": "{{user `headless`}}",
+        "cpus": "{{user `cpus` }}",
+        "cores": 1,
+        "memory": "{{user `memory` }}",
+        "network": "NAT",
+        "disk_size": "{{user `disk_size`}}",
+        "disk_adapter_type": "lsisas1068",
+        "disk_type_id": "4",
+        "parallel": "NONE",
+        "serial": "NONE",
+        "sound": false,
+        "usb": false,
+        "vmx_remove_ethernet_interfaces": true,
+        "floppy_files": [
+            "answer_files/{{user `box_basename`}}/Autounattend.xml",
+            "scripts/1build/Enable-WinRM.cmd"
+        ],
+        "communicator": "winrm",
+        "winrm_username": "vagrant",
+        "winrm_password": "vagrant",
+        "winrm_timeout": "12h",
+        "shutdown_command": "C:/windows/packer/PackerShutdown.cmd",
+        "shutdown_timeout": "4h"
+    }],
+    "provisioners": [{
+            "pause_before": "5m",
+            "type": "windows-shell",
+            "scripts": [
+                "scripts/2provision/Remove-SystemDriveLetter.cmd",
+                "scripts/2provision/Configure-Windows.cmd",
+                "scripts/2provision/Install-Chocolatey.cmd",
+                "scripts/2provision/Configure-Chocolatey.cmd",
+                "scripts/2provision/Install-DefaultApps.cmd"
+            ]
+        },
+        {
+            "type": "windows-restart",
+            "timeout": "20m"
+        },
+        {
+            "type": "breakpoint",
+            "note": "foo bar baz",
+            "disable": "false"
+        },
+        {
+            "type": "powershell",
+            "elevated_user": "vagrant",
+            "elevated_password": "vagrant",
+            "valid_exit_codes": [
+                0,
+                1605,
+                1614,
+                1641,
+                3010
+            ],
+            "scripts": [
+                "scripts/99sysprep/Clean-System.ps1",
+                "scripts/99sysprep/save_shutdown_command.ps1"
+            ]
+        },
+        {
+            "type": "breakpoint",
+            "note": "foo bar baz",
+            "disable": "false"
+        }
+    ],
+    "post-processors": [{
+            "type": "shell-local",
+            "inline": [
+                "ovftool --annotation=\"Base install of Windows 2019 Standard (1903)\" --diskMode=thin --noImageFiles --overwrite --prop:vendor=\"Cadient IT\"  --prop:vendorUrl=\"https://cadienttalent.com\" --sourceType=VMX --targetType=OVA \"{{user `packer_output`}}/{{user `vm_name`}}/{{user `vm_name`}}.vmx\" \"{{user `vagrant_output`}}/{{user `vm_name`}}.ova\""
+            ]
+        },
+        {
+            "type": "vagrant",
+            "output": "{{user `vagrant_output`}}/{{user `vm_name`}}.box"
+        }
+    ]
+}

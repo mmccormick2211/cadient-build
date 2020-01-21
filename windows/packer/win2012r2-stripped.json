@@ -58,34 +58,9 @@
             "type": "windows-shell",
             "scripts": [
                 "scripts/2provision/Remove-SystemDriveLetter.cmd",
-                "scripts/2provision/Customize-Windows.cmd",
-                "scripts/2provision/Install-Chocolatey.cmd"
-            ]
-        },
-        {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "'############### Chocolatey Package Manager Configuration Block ###############'",
-                "#choco config  set     --name='proxy'         --value=''",
-                "#choco config  set     --name='proxyUser'     --value=''",
-                "#choco config  set     --name='proxyPassword' --value=''",
-                "choco feature enable  --name='usePackageExitCodes'",
-                "choco feature enable  --name='useRememberedArgumentsForUpgrades'",
-                "choco feature enable  --name='stopOnFirstPackageFailure'",
-                "choco feature enable  --name='logWithoutColor'",
-                "choco feature disable --name='showDownloadProgress'",
-                "choco upgrade chocolatey-core.extension          --acceptlicense --yes",
-                "choco upgrade chocolatey-windowsupdate.extension --acceptlicense --yes",
-                "choco upgrade 7zip                               --acceptlicense --yes"
+                "scripts/2provision/Configure-Windows.cmd",
+                "scripts/2provision/Install-Chocolatey.cmd",
+                "scripts/2provision/Configure-Chocolatey.cmd"
             ]
         },
         {
@@ -137,92 +112,20 @@
                 3010
             ],
             "inline": [
-                "'############### Base Applications Installation ###############'",
+                "'############### CM   Applications Installation ###############'",
                 "#choco upgrade chef-client                --acceptlicense --yes",
                 "#choco upgrade puppet-agent               --acceptlicense --yes",
                 "#choco upgrade salt-minion                --acceptlicense --yes",
-                "#choco upgrade dotnetfx --version 4.5.2.0 --acceptlicense --yes",
-                "#choco pin remove --name=dotnetfx",
-                "#choco pin add --name=dotnetfx",
-                "#choco upgrade powershell                 --acceptlicense --yes",
+                "'############### Base Applications Installation ###############'",
                 "choco upgrade sysinternals               --acceptlicense --yes",
                 "choco upgrade ultradefrag                --acceptlicense --yes",
-                "#choco upgrade vmware-tools               --acceptlicense --yes",
                 "choco upgrade abc-update                 --acceptlicense --yes",
-                "#iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/DarwinJS/ChocoPackages/master/openssh/InstallChoco_and_win32-openssh_with_server.ps1'))",
                 "#"
             ]
         },
         {
             "type": "windows-restart",
             "timeout": "20m"
-        },
-        {
-            "type": "breakpoint",
-            "note": "foo bar baz",
-            "disable": "false"
-        },
-        {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "##### March 2014 servicing stack update for Windows 8.1 and Windows Server 2012 R2 (KB2919442)",
-                "##### Windows Server 2012 R2 Update: April 2014 (KB2919355)",
-                "#",
-                "#ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB2919442",
-                "#ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB2919355",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB2919442",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB2919355",
-                "choco install KB2919442 --acceptlicense --yes",
-                "choco install KB2919355 --acceptlicense --yes",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "60m"
-        },
-        {
-            "type": "breakpoint",
-            "note": "foo bar baz",
-            "disable": "false"
-        },
-        {
-            "type": "powershell",
-            "elevated_user": "vagrant",
-            "elevated_password": "vagrant",
-            "valid_exit_codes": [
-                0,
-                1605,
-                1614,
-                1641,
-                3010
-            ],
-            "inline": [
-                "##### Security update for Windows kernel: March 10, 2015 (KB3035131)",
-                "#",
-                "#ABC-Update.exe /A:Install /S:WSUS=http://sys-wsus-app1.corp.unicru.com /R:N /K:KB3035131",
-                "#ABC-Update.exe /A:Install /S:MSUpdate /R:N /K:KB3035131",
-                "choco install KB3035131 --acceptlicense --yes",
-                "#"
-            ]
-        },
-        {
-            "type": "windows-restart",
-            "timeout": "20m"
-        },
-        {
-            "type": "breakpoint",
-            "note": "foo bar baz",
-            "disable": "false"
         },
         {
             "type": "powershell",
@@ -239,11 +142,6 @@
                 "scripts/99sysprep/Clean-System.ps1",
                 "scripts/99sysprep/save_shutdown_command.ps1"
             ]
-        },
-        {
-            "type": "breakpoint",
-            "note": "foo bar baz",
-            "disable": "false"
         }
     ],
     "post-processors": [{

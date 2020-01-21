@@ -1,6 +1,7 @@
 @echo off
 echo.############### Chocolatey Package Manager Configuration Block ###############
-:: ## Reset to Factory Defaults. 
+:: ## Defaults are listed and commented out. Copy line, uncomment, and modify.
+
 choco config unset --name="cacheLocation"
 choco config unset --name="commandExecutionTimeoutSeconds"
 choco config unset --name="containsLegacyPackageInstalls"
@@ -11,6 +12,9 @@ choco config unset --name="proxyPassword"
 choco config unset --name="proxyUser"
 choco config unset --name="upgradeAllExceptions"
 choco config unset --name="webRequestTimeoutSeconds"
+:: choco config set --name="proxy" --value="http://pdxproxy.dmz.unicru.com:8080"
+:: choco config set --name="proxyUser" --value="svc_proxy"
+:: choco config set --name="proxyPassword" --value="P2ss4PROXY"
 
 echo.############### Chocolatey Package Manager Feature Block ###############
 :: ## Defaults are listed and commented out. Copy line, uncomment, and modify.
@@ -28,6 +32,7 @@ choco feature disable --name="showDownloadProgress"
 :: choco feature disable -name="allowEmptyChecksums"
 :: choco feature disable -name="allowGlobalConfirmation"
 :: choco feature disable -name="exitOnRebootDetected"
+choco feature enable  -name="exitOnRebootDetected"
 :: choco feature disable -name="failOnAutoUninstaller"
 :: choco feature disable -name="failOnInvalidOrMissingLicense"
 :: choco feature disable -name="failOnStandardError"
@@ -45,3 +50,4 @@ choco feature enable --name="stopOnFirstPackageFailure"
 :: choco feature disable -name="useRememberedArgumentsForUpgrades"
 choco feature enable --name="useRememberedArgumentsForUpgrades"
 :: choco feature unknown -name="usePackageRepositoryOptimizations"
+EXIT /B

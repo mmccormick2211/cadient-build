@@ -7,3 +7,4 @@ echo.############### WMF/PowerShell Installation ###############
 choco install powershell --acceptlicense --yes
 choco pin remove --name=powershell
 choco pin add    --name=powershell
+EXIT /B

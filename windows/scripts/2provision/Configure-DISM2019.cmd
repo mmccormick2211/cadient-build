@@ -1,0 +1,19 @@
+@echo off
+echo.############### Windows Features Installation ###############'
+choco install   MicrosoftWindowsPowerShellRoot --source='WindowsFeatures' --no-progress
+choco install   MicrosoftWindowsPowerShell     --source='WindowsFeatures' --no-progress
+choco install   MicrosoftWindowsPowerShellV2   --source='WindowsFeatures' --no-progress
+choco install   NetFx3ServerFeatures           --source='WindowsFeatures' --no-progress
+choco install   NetFx3                         --source='WindowsFeatures' --no-progress
+choco install   NetFx4ServerFeatures           --source='WindowsFeatures' --no-progress
+choco install   NetFx4                         --source='WindowsFeatures' --no-progress
+choco install   SMB1Protocol                   --source='WindowsFeatures' --no-progress
+choco install   SMB1Protocol-Client            --source='WindowsFeatures' --no-progress
+choco install   TelnetClient                   --source='WindowsFeatures' --no-progress
+choco install   TFTP                           --source='WindowsFeatures' --no-progress
+choco install   Xps-Foundation-Xps-Viewer      --source='WindowsFeatures' --no-progress
+choco uninstall MicrosoftWindowsPowerShellISE  --source='WindowsFeatures' --no-progress
+choco uninstall SearchEngine-Client-Package    --source='WindowsFeatures' --no-progress
+choco uninstall Windows-Defender               --source='WindowsFeatures' --no-progress
+:: choco uninstall Windows-Defender-Gui           --source='WindowsFeatures'
+:: choco uninstall Windows-Defender-Features      --source='WindowsFeatures'
