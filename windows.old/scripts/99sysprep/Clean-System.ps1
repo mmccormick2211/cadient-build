@@ -45,7 +45,7 @@ catch { }
 
 try {
     "##### Running UltraDefrag..."
-    Start-Process -FilePath "C:\Program Files\UltraDefrag\udefrag.exe" -ArgumentList '--optimize', '--repeat C:' -Wait
+    Start-Process -FilePath "C:\windows\system32\udefrag.exe" -ArgumentList '--optimize', '--repeat C:' -Wait
 }
 catch { }
 
