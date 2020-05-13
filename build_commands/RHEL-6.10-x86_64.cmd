@@ -1,0 +1,1 @@
+packer build -color=true -timestamp-ui .\packer_templates\rhel\rhel-6.10-x86_64.json
