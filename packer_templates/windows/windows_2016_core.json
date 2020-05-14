@@ -1,135 +1,137 @@
 {
-  "builders": [
-    {
-      "boot_wait": "0s",
-      "communicator": "winrm",
-      "cpus": 2,
-      "disk_size": "{{user `disk_size`}}",
-      "enable_secure_boot": true,
-      "floppy_files": [
-        "{{user `autounattend`}}",
-        "./scripts/disable-screensaver.ps1",
-        "./scripts/disable-winrm.ps1",
-        "./scripts/enable-winrm.ps1",
-        "./scripts/microsoft-updates.bat",
-        "./scripts/win-updates.ps1"
-      ],
-      "guest_additions_mode": "disable",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "iso_url": "{{user `iso_url`}}",
-      "memory": 2048,
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "switch_name": "{{user `hyperv_switchname`}}",
-      "type": "hyperv-iso",
-      "vm_name": "WindowsServer2016Core",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "{{user `winrm_timeout`}}",
-      "winrm_username": "vagrant"
+    "variables": {
+        "mirror": "https://software-download.microsoft.com",
+        "mirror_directory": "download/pr",
+        "iso_name": "Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
+        "iso_checksum_type": "md5",
+        "iso_checksum": "70721288BBCDFE3239D8F8C0FAE55F1F",
+        "autounattend": "{{template_dir}}/answer_files/2016_core/Autounattend.xml",
+        "build_timestamp": "{{isotime \"20060102150405\"}}",
+        "cpus": "2",
+        "memory": "2048",
+        "disk_size": "65536",
+        "disk_type_id": "0",
+        "guest_additions_url": "",
+        "headless": "false",
+        "iso_directory": "{{template_dir}}/../../iso",
+        "build_directory": "{{template_dir}}/../../builds",
+        "box_basename": "windows-1607-core",
+        "arch": "x86_64",
+        "template": "{{user `box_basename`}}_{{user `arch`}}",
+        "version": "TIMESTAMP",
+        "restart_timeout": "5m",
+        "winrm_timeout": "2h",
+        "http_proxy": "{{env `http_proxy`}}",
+        "https_proxy": "{{env `https_proxy`}}",
+        "no_proxy": "{{env `no_proxy`}}"
     },
-    {
-      "boot_wait": "2m",
-      "communicator": "winrm",
-      "cpus": 2,
-      "disk_adapter_type": "lsisas1068",
-      "disk_size": "{{user `disk_size`}}",
-      "disk_type_id": "{{user `disk_type_id`}}",
-      "floppy_files": [
-        "{{user `autounattend`}}",
-        "./scripts/disable-screensaver.ps1",
-        "./scripts/disable-winrm.ps1",
-        "./scripts/enable-winrm.ps1",
-        "./scripts/microsoft-updates.bat",
-        "./scripts/win-updates.ps1"
-      ],
-      "guest_os_type": "windows9srv-64",
-      "headless": "{{user `headless`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "iso_url": "{{user `iso_url`}}",
-      "memory": 2048,
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "type": "vmware-iso",
-      "vmx_data": {
-        "RemoteDisplay.vnc.enabled": "false",
-        "RemoteDisplay.vnc.port": "5900"
-      },
-      "vmx_remove_ethernet_interfaces": true,
-      "vnc_port_max": 5980,
-      "vnc_port_min": 5900,
-      "winrm_password": "vagrant",
-      "winrm_timeout": "{{user `winrm_timeout`}}",
-      "winrm_username": "vagrant"
-    },
-    {
-      "boot_wait": "2m",
-      "communicator": "winrm",
-      "cpus": 2,
-      "disk_size": "{{user `disk_size`}}",
-      "floppy_files": [
-        "{{user `autounattend`}}",
-        "./scripts/disable-screensaver.ps1",
-        "./scripts/disable-winrm.ps1",
-        "./scripts/enable-winrm.ps1",
-        "./scripts/microsoft-updates.bat",
-        "./scripts/win-updates.ps1"
-      ],
-      "guest_additions_mode": "disable",
-      "guest_os_type": "Windows2016_64",
-      "headless": "{{user `headless`}}",
-      "iso_checksum": "{{user `iso_checksum`}}",
-      "iso_checksum_type": "{{user `iso_checksum_type`}}",
-      "iso_url": "{{user `iso_url`}}",
-      "memory": 2048,
-      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
-      "type": "virtualbox-iso",
-      "winrm_password": "vagrant",
-      "winrm_timeout": "{{user `winrm_timeout`}}",
-      "winrm_username": "vagrant"
-    }
-  ],
-  "post-processors": [
-    {
-      "keep_input_artifact": false,
-      "output": "windows_2016_core_{{.Provider}}.box",
-      "type": "vagrant",
-      "vagrantfile_template": "vagrantfile-windows_2016_core.template"
-    }
-  ],
-  "provisioners": [
-    {
-      "scripts": [
-        "./scripts/vm-guest-tools.bat",
-        "./scripts/enable-rdp.bat"
-      ],
-      "type": "windows-shell"
-    },
-    {
-      "scripts": [
-        "./scripts/debloat-windows.ps1"
-      ],
-      "type": "powershell"
-    },
-    {
-      "scripts": [
-        "./scripts/set-winrm-automatic.bat",
-        "./scripts/uac-enable.bat",
-        "./scripts/compile-dotnet-assemblies.bat",
-        "./scripts/dis-updates.bat",
-        "./scripts/compact.bat"
-      ],
-      "type": "windows-shell"
-    }
-  ],
-  "variables": {
-    "autounattend": "./answer_files/2016_core/Autounattend.xml",
-    "disk_size": "61440",
-    "disk_type_id": "1",
-    "headless": "false",
-    "iso_checksum": "70721288BBCDFE3239D8F8C0FAE55F1F",
-    "iso_checksum_type": "md5",
-    "iso_url": "https://software-download.microsoft.com/download/pr/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO",
-    "winrm_timeout": "6h"
-  }
+    "builders": [{
+            "type": "virtualbox-iso",
+            "boot_wait": "2m",
+            "communicator": "winrm",
+            "cpus": "{{ user `cpus` }}",
+            "disk_size": "{{user `disk_size`}}",
+            "floppy_files": [
+                "{{user `autounattend`}}",
+                "{{template_dir}}/scripts/disable-screensaver.ps1",
+                "{{template_dir}}/scripts/disable-winrm.ps1",
+                "{{template_dir}}/scripts/enable-winrm.ps1",
+                "{{template_dir}}/scripts/microsoft-updates.bat",
+                "{{template_dir}}/scripts/win-updates.ps1",
+                "{{template_dir}}/scripts/unattend.xml",
+                "{{template_dir}}/scripts/sysprep.bat"
+            ],
+            "guest_additions_mode": "disable",
+            "guest_additions_url": "{{ user `guest_additions_url` }}",
+            "guest_os_type": "Windows2016_64",
+            "headless": "{{user `headless`}}",
+            "iso_checksum": "{{user `iso_checksum`}}",
+            "iso_checksum_type": "{{user `iso_checksum_type`}}",
+            "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+            "memory": "{{ user `memory` }}",
+            "output_directory": "{{ user `build_directory` }}/packer-{{user `template`}}-virtualbox",
+            "shutdown_command": "a:/sysprep.bat",
+            "virtualbox_version_file": ".vbox_version",
+            "vm_name": "{{ user `template` }}",
+            "winrm_password": "vagrant",
+            "winrm_timeout": "{{user `winrm_timeout`}}",
+            "winrm_username": "vagrant"
+        },
+        {
+            "type": "vmware-iso",
+            "boot_wait": "2m",
+            "communicator": "winrm",
+            "cpus": "{{ user `cpus` }}",
+            "disk_adapter_type": "lsisas1068",
+            "disk_size": "{{user `disk_size`}}",
+            "disk_type_id": "{{user `disk_type_id`}}",
+            "floppy_files": [
+                "{{user `autounattend`}}",
+                "{{template_dir}}/scripts/disable-screensaver.ps1",
+                "{{template_dir}}/scripts/disable-winrm.ps1",
+                "{{template_dir}}/scripts/enable-winrm.ps1",
+                "{{template_dir}}/scripts/microsoft-updates.bat",
+                "{{template_dir}}/scripts/unattend.xml",
+                "{{template_dir}}/scripts/sysprep.bat",
+                "{{template_dir}}/scripts/win-updates.ps1"
+            ],
+            "guest_os_type": "windows9srv-64",
+            "headless": "{{user `headless`}}",
+            "iso_checksum": "{{user `iso_checksum`}}",
+            "iso_checksum_type": "{{user `iso_checksum_type`}}",
+            "iso_url": "{{user `mirror`}}/{{user `mirror_directory`}}/{{user `iso_name`}}",
+            "memory": "{{ user `memory` }}",
+            "output_directory": "{{ user `build_directory` }}/packer-{{user `template`}}-vmware",
+            "shutdown_command": "a:/sysprep.bat",
+            "version": 14,
+            "vm_name": "{{ user `template` }}",
+            "vmx_data": {
+                "cpuid.coresPerSocket": "1",
+                "RemoteDisplay.vnc.enabled": "false",
+                "RemoteDisplay.vnc.port": "5900"
+            },
+            "vmx_remove_ethernet_interfaces": true,
+            "vnc_port_max": 5980,
+            "vnc_port_min": 5900,
+            "winrm_password": "vagrant",
+            "winrm_timeout": "{{user `winrm_timeout`}}",
+            "winrm_username": "vagrant"
+        }
+    ],
+    "post-processors": [{
+        "keep_input_artifact": false,
+        "output": "{{ user `build_directory` }}/{{user `template`}}.{{.Provider}}.box",
+        "type": "vagrant",
+        "vagrantfile_template": "{{template_dir}}/vagrant_templates/vagrantfile-windows_2016_core.template"
+    }],
+    "provisioners": [{
+            "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+            "scripts": [
+                "{{template_dir}}/scripts/vm-guest-tools.bat",
+                "{{template_dir}}/scripts/enable-rdp.bat"
+            ],
+            "type": "windows-shell"
+        },
+        {
+            "scripts": [
+                "{{template_dir}}/scripts/debloat-windows.ps1"
+            ],
+            "type": "powershell"
+        },
+        {
+            "restart_timeout": "{{user `restart_timeout`}}",
+            "type": "windows-restart"
+        },
+        {
+            "execute_command": "{{ .Vars }} cmd /c \"{{ .Path }}\"",
+            "scripts": [
+                "{{template_dir}}/scripts/set-winrm-automatic.bat",
+                "{{template_dir}}/scripts/uac-enable.bat",
+                "{{template_dir}}/scripts/compile-dotnet-assemblies.bat",
+                "{{template_dir}}/scripts/dis-updates.bat",
+                "{{template_dir}}/scripts/compact.bat"
+            ],
+            "type": "windows-shell"
+        }
+    ]
 }
-

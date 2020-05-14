@@ -18,7 +18,7 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 3389, host: 3389, id: "rdp", auto_correct: true
 
     config.vm.provider :virtualbox do |v, override|
-        #v.gui = true
+        v.gui = true
         v.customize ["modifyvm", :id, "--memory", 2048]
         v.customize ["modifyvm", :id, "--cpus", 2]
         v.customize ["modifyvm", :id, "--vram", 128]
@@ -27,7 +27,6 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provider :vmware_fusion do |v, override|
-        v.gui = true
         v.vmx["memsize"] = "2048"
         v.vmx["numvcpus"] = "2"
         v.vmx["ethernet0.virtualDev"] = "vmxnet3"
@@ -50,7 +49,6 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provider :vmware_workstation do |v, override|
-        #v.gui = true
         v.vmx["memsize"] = "2048"
         v.vmx["numvcpus"] = "2"
         v.vmx["ethernet0.virtualDev"] = "vmxnet3"
@@ -60,5 +58,11 @@ Vagrant.configure("2") do |config|
         v.enable_vmrun_ip_lookup = false
         v.whitelist_verified = true
         v.vmx["hgfs.linkRootShare"] = "FALSE"
+    end
+
+    config.vm.provider "hyperv" do |v|
+        v.cpus = 2
+        v.maxmemory = 2048
+        v.linked_clone = true
     end
 end

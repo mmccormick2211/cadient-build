@@ -1,9 +1,9 @@
 #!/bin/sh -eux
 
 # should output one of 'redhat' 'centos' 'oraclelinux'
-distro="`rpm -qf --queryformat '%{NAME}' /etc/redhat-release | cut -f 1 -d '-'`"
+distro="$(rpm -qf --queryformat '%{NAME}' /etc/redhat-release | cut -f 1 -d '-')"
 
-major_version="`sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release | awk -F. '{print $1}'`";
+major_version="$(sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release | awk -F. '{print $1}')"
 
 # make sure we use dnf on EL 8+
 if [ "$major_version" -ge 8 ]; then
@@ -18,39 +18,43 @@ if [ "$major_version" -ge 8 ]; then
   dnf remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
 elif [ "$major_version" -gt 5 ]; then # yum-utils isn't in RHEL 5 so don't try to run this
   if ! command -v package-cleanup >/dev/null 2>&1; then
-  yum install -y yum-utils
+    if [ "$distro" != 'redhat' ]; then
+      yum install -y yum-utils
+    fi
   fi
-  package-cleanup --oldkernels --count=1 -y
+  if command -v package-cleanup >/dev/null 2>&1; then
+    package-cleanup --oldkernels --count=1 -y
+  fi
 fi
 
 # Remove development and kernel source packages
-$pkg_cmd -y remove gcc cpp kernel-devel kernel-headers;
+$pkg_cmd -y remove gcc cpp kernel-devel kernel-headers
 
 # Clean up network interface persistence
-rm -f /etc/udev/rules.d/70-persistent-net.rules;
-mkdir -p /etc/udev/rules.d/70-persistent-net.rules;
-rm -f /lib/udev/rules.d/75-persistent-net-generator.rules;
-rm -rf /dev/.udev/;
+rm -f /etc/udev/rules.d/70-persistent-net.rules
+mkdir -p /etc/udev/rules.d/70-persistent-net.rules
+rm -f /lib/udev/rules.d/75-persistent-net-generator.rules
+rm -rf /dev/.udev/
 
-for ndev in `ls -1 /etc/sysconfig/network-scripts/ifcfg-*`; do
-    if [ "`basename $ndev`" != "ifcfg-lo" ]; then
-        sed -i '/^HWADDR/d' "$ndev";
-        sed -i '/^UUID/d' "$ndev";
-    fi
+for ndev in $(ls -1 /etc/sysconfig/network-scripts/ifcfg-*); do
+  if [ "$(basename $ndev)" != "ifcfg-lo" ]; then
+    sed -i '/^HWADDR/d' "$ndev"
+    sed -i '/^UUID/d' "$ndev"
+  fi
 done
 
 # new-style network device naming for centos7
-if grep -q -i "release 7" /etc/redhat-release ; then
-  # radio off & remove all interface configration
+if grep -q -i "release 7" /etc/redhat-release; then
+  # radio off & remove all interface configuration
   nmcli radio all off
   /bin/systemctl stop NetworkManager.service
-  for ifcfg in `ls /etc/sysconfig/network-scripts/ifcfg-* |grep -v ifcfg-lo` ; do
+  for ifcfg in $(ls /etc/sysconfig/network-scripts/ifcfg-* | grep -v ifcfg-lo); do
     rm -f $ifcfg
   done
   rm -rf /var/lib/NetworkManager/*
 
   echo "==> Setup /etc/rc.d/rc.local for EL7"
-  cat <<_EOF_ | cat >> /etc/rc.d/rc.local
+  cat <<_EOF_ | cat >>/etc/rc.d/rc.local
 #BENTO-BEGIN
 LANG=C
 # delete all connection
@@ -103,7 +107,7 @@ $pkg_cmd remove -y \
   microcode_ctl
 
 if [ "$distro" != 'redhat' ]; then
-  $pkg_cmd -y clean all;
+  $pkg_cmd -y clean all
 fi
 
 # remove the install log

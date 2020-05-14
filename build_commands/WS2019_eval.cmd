@@ -1,0 +1,1 @@
+packer build -color=true -timestamp-ui .\packer_templates\windows\windows_2019.json
