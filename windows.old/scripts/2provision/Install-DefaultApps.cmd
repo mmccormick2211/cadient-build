@@ -2,8 +2,8 @@
 echo.################ Base Applications Installation ###############
 choco upgrade chocolatey --acceptlicense --yes
 choco upgrade chocolatey-core.extension --acceptlicense --yes
-choco upgrade chocolatey-dotnetfx.extension --acceptlicense --yes
-choco upgrade chocolatey-windowsupdate.extension --acceptlicense --yes
+:: choco upgrade chocolatey-dotnetfx.extension --acceptlicense --yes
+:: choco upgrade chocolatey-windowsupdate.extension --acceptlicense --yes
 
 choco upgrade vcredist-all --acceptlicense --yes
 

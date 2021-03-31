@@ -1,9 +1,16 @@
 #!/bin/sh -eux
 
 # should output one of 'redhat' 'centos' 'oraclelinux'
-distro="$(rpm -qf --queryformat '%{NAME}' /etc/redhat-release | cut -f 1 -d '-')"
+distro="`rpm -qf --queryformat '%{NAME}' /etc/redhat-release | cut -f 1 -d '-'`"
 
-major_version="$(sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release | awk -F. '{print $1}')"
+major_version="`sed 's/^.\+ release \([.0-9]\+\).*/\1/' /etc/redhat-release | awk -F. '{print $1}'`";
+
+
+echo "reduce the grub menu time to 1 second"
+if ! [ "$major_version" -eq 6 ]; then
+  sed -i -e 's/^GRUB_TIMEOUT=[0-9]\+$/GRUB_TIMEOUT=1/' /etc/default/grub
+  grub2-mkconfig -o /boot/grub2/grub.cfg
+fi
 
 # make sure we use dnf on EL 8+
 if [ "$major_version" -ge 8 ]; then
@@ -12,49 +19,58 @@ else
   pkg_cmd="yum"
 fi
 
-# remove previous kernels that yum/dnf preserved for rollback
+
+echo "Remove development and kernel source packages"
+$pkg_cmd -y remove gcc cpp gc kernel-devel kernel-headers glibc-devel elfutils-libelf-devel glibc-headers kernel-devel kernel-headers
+
 if [ "$major_version" -ge 8 ]; then
-  dnf autoremove -y
-  dnf remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
-elif [ "$major_version" -gt 5 ]; then # yum-utils isn't in RHEL 5 so don't try to run this
+  echo "remove orphaned packages"
+  dnf -y autoremove
+  echo "Remove previous kernels that preserved for rollbacks"
+  dnf -y remove -y $(dnf repoquery --installonly --latest-limit=-1 -q)
+else
+  echo "Remove previous kernels that preserved for rollbacks"
   if ! command -v package-cleanup >/dev/null 2>&1; then
-    if [ "$distro" != 'redhat' ]; then
-      yum install -y yum-utils
-    fi
+    yum -y install yum-utils
   fi
-  if command -v package-cleanup >/dev/null 2>&1; then
-    package-cleanup --oldkernels --count=1 -y
-  fi
+  package-cleanup --oldkernels --count=1 -y
 fi
 
-# Remove development and kernel source packages
-$pkg_cmd -y remove gcc cpp kernel-devel kernel-headers
+# Avoid ~200 meg firmware package we don't need
+# this cannot be done in the KS file so we do it here
+echo "Removing extra firmware packages"
+$pkg_cmd -y remove linux-firmware
+
+if [ "$distro" != 'redhat' ]; then
+  echo "clean all package cache information"
+  $pkg_cmd -y clean all  --enablerepo=\*;
+fi
 
 # Clean up network interface persistence
-rm -f /etc/udev/rules.d/70-persistent-net.rules
-mkdir -p /etc/udev/rules.d/70-persistent-net.rules
-rm -f /lib/udev/rules.d/75-persistent-net-generator.rules
-rm -rf /dev/.udev/
+rm -f /etc/udev/rules.d/70-persistent-net.rules;
+mkdir -p /etc/udev/rules.d/70-persistent-net.rules;
+rm -f /lib/udev/rules.d/75-persistent-net-generator.rules;
+rm -rf /dev/.udev/;
 
-for ndev in $(ls -1 /etc/sysconfig/network-scripts/ifcfg-*); do
-  if [ "$(basename $ndev)" != "ifcfg-lo" ]; then
-    sed -i '/^HWADDR/d' "$ndev"
-    sed -i '/^UUID/d' "$ndev"
-  fi
+for ndev in `ls -1 /etc/sysconfig/network-scripts/ifcfg-*`; do
+    if [ "`basename $ndev`" != "ifcfg-lo" ]; then
+        sed -i '/^HWADDR/d' "$ndev";
+        sed -i '/^UUID/d' "$ndev";
+    fi
 done
 
 # new-style network device naming for centos7
-if grep -q -i "release 7" /etc/redhat-release; then
-  # radio off & remove all interface configuration
+if [ "$major_version" -eq 7 ]; then
+  # radio off & remove all interface configration
   nmcli radio all off
   /bin/systemctl stop NetworkManager.service
-  for ifcfg in $(ls /etc/sysconfig/network-scripts/ifcfg-* | grep -v ifcfg-lo); do
+  for ifcfg in `ls /etc/sysconfig/network-scripts/ifcfg-* |grep -v ifcfg-lo` ; do
     rm -f $ifcfg
   done
   rm -rf /var/lib/NetworkManager/*
 
   echo "==> Setup /etc/rc.d/rc.local for EL7"
-  cat <<_EOF_ | cat >>/etc/rc.d/rc.local
+  cat <<_EOF_ | cat >> /etc/rc.d/rc.local
 #BENTO-BEGIN
 LANG=C
 # delete all connection
@@ -75,52 +91,23 @@ _EOF_
   chmod +x /etc/rc.d/rc.local
 fi
 
-# truncate any logs that have built up during the install
+echo "truncate any logs that have built up during the install"
 find /var/log -type f -exec truncate --size=0 {} \;
 
-# we try to remove these in the ks file, but they're still there
-# in the builds so let's remove them here to be sure :shrug:
-#
-# 12.2019 note: We can probably remove this now, but let's confirm it
-$pkg_cmd remove -y \
-  aic94xx-firmware \
-  atmel-firmware \
-  bfa-firmware \
-  ipw2100-firmware \
-  ipw2200-firmware \
-  ivtv-firmware \
-  iwl1000-firmware \
-  iwl3945-firmware \
-  iwl4965-firmware \
-  iwl5000-firmware \
-  iwl5150-firmware \
-  iwl6000-firmware \
-  iwl6050-firmware \
-  kernel-uek-firmware \
-  libertas-usb8388-firmware \
-  netxen-firmware \
-  ql2xxx-firmware \
-  rt61pci-firmware \
-  rt73usb-firmware \
-  zd1211-firmware \
-  linux-firmware \
-  microcode_ctl
+echo "remove the install log"
+rm -f /root/anaconda-ks.cfg /root/original-ks.cfg
 
-if [ "$distro" != 'redhat' ]; then
-  $pkg_cmd -y clean all
-fi
-
-# remove the install log
-rm -f /root/anaconda-ks.cfg
-
-# remove the contents of /tmp and /var/tmp
+echo "remove the contents of /tmp and /var/tmp"
 rm -rf /tmp/* /var/tmp/*
 
-# Blank netplan machine-id (DUID) so machines get unique ID generated on boot.
 if [ "$major_version" -ge 7 ]; then
+  echo "Force a new random seed to be generated"
+  rm -f /var/lib/systemd/random-seed
+
+  echo "Wipe netplan machine-id (DUID) so machines get unique ID generated on boot"
   truncate -s 0 /etc/machine-id
 fi
 
-# clear the history so our install isn't there
-export HISTSIZE=0
+echo "Clear the history so our install commands aren't there"
 rm -f /root/.wget-hsts
+export HISTSIZE=0
