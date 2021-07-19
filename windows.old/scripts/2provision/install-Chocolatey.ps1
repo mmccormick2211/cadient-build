@@ -22,10 +22,10 @@
 
 # Environment Variables, specified as $env:NAME in PowerShell.exe and %NAME% in cmd.exe.
 # For explicit proxy, please set 
-# $env:chocolateyProxyLocation = 'http://pdxproxy.dmz.unicru.com:8080'
+$env:chocolateyProxyLocation = 'http://squidproxy.dmz.unicru.com:8080'
 #and optionally 
-# $env:chocolateyProxyUser = 'svc_proxy'
-# $env:chocolateyProxyPassword = 'P2ss4PROXY'
+$env:chocolateyProxyUser = 'prodproxy'
+$env:chocolateyProxyPassword = 'Pr0dPr0xY'
 # For an explicit version of Chocolatey, please set $env:chocolateyVersion = 'versionnumber'
 # To target a different url for chocolatey.nupkg, please set $env:chocolateyDownloadUrl = 'full url to nupkg file'
 # NOTE: $env:chocolateyDownloadUrl does not work with $env:chocolateyVersion.

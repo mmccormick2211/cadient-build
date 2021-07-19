@@ -22,10 +22,10 @@
 
 # Environment Variables, specified as $env:NAME in PowerShell.exe and %NAME% in cmd.exe.
 # For explicit proxy, please set 
-$env:chocolateyProxyLocation = 'http://pdxproxy.dmz.unicru.com:8080'
+$env:chocolateyProxyLocation = 'http://squidproxy.dmz.unicru.com:8080'
 #and optionally 
-$env:chocolateyProxyUser = 'svc_proxy'
-$env:chocolateyProxyPassword = 'P2ss4PROXY'
+$env:chocolateyProxyUser = 'svc_proxy';$env:chocolateyProxyPassword = 'P2ss4PROXY'
+$env:chocolateyProxyUser = 'prodproxy';$env:chocolateyProxyPassword = 'Pr0dPr0xY'
 # For an explicit version of Chocolatey, please set $env:chocolateyVersion = 'versionnumber'
 # To target a different url for chocolatey.nupkg, please set $env:chocolateyDownloadUrl = 'full url to nupkg file'
 # NOTE: $env:chocolateyDownloadUrl does not work with $env:chocolateyVersion.
@@ -47,7 +47,7 @@ if (![string]::IsNullOrEmpty($chocolateyDownloadUrl)){
   $url = "$chocolateyDownloadUrl"
 }
 
-if ($env:TEMP -eq $null) {
+if ($null -eq $env:TEMP) {
   $env:TEMP = Join-Path $env:SystemDrive 'temp'
 }
 $chocTempDir = Join-Path $env:TEMP "chocolatey"
@@ -112,7 +112,7 @@ param (
   }
 
   $ignoreProxy = $env:chocolateyIgnoreProxy
-  if ($ignoreProxy -ne $null -and $ignoreProxy -eq 'true') {
+  if ($null -ne $ignoreProxy -and $ignoreProxy -eq 'true') {
     Write-Debug "Explicitly bypassing proxy due to user environment variable"
     $downloader.Proxy = [System.Net.GlobalProxySelection]::GetEmptyWebProxy()
   } else {
@@ -187,7 +187,7 @@ Download-File $url $file
 $7zaExe = Join-Path $tempDir '7za.exe'
 $unzipMethod = '7zip'
 $useWindowsCompression = $env:chocolateyUseWindowsCompression
-if ($useWindowsCompression -ne $null -and $useWindowsCompression -eq 'true') {
+if ($null -ne $useWindowsCompression -and $useWindowsCompression -eq 'true') {
   Write-Output 'Using built-in compression to unzip'
   $unzipMethod = 'builtin'
 } elseif (-Not (Test-Path ($7zaExe))) {

@@ -1,6 +1,9 @@
 @echo off
 echo.############### Chocolatey Package Manager Configuration Block ###############
 :: ## Defaults are listed and commented out. Copy line, uncomment, and modify.
+$env:chocolateyProxyLocation = 'http://squidproxy.dmz.unicru.com:8080'
+#and optionally 
+$env:chocolateyProxyUser = 'prodproxy';$env:chocolateyProxyPassword = 'Pr0dPr0xY'
 
 choco config unset --name="cacheLocation"
 choco config unset --name="commandExecutionTimeoutSeconds"
@@ -12,9 +15,9 @@ choco config unset --name="proxyPassword"
 choco config unset --name="proxyUser"
 choco config unset --name="upgradeAllExceptions"
 choco config unset --name="webRequestTimeoutSeconds"
-choco config set --name="proxy" --value="http://pdxproxy.dmz.unicru.com:8080"
-choco config set --name="proxyUser" --value="svc_proxy"
-choco config set --name="proxyPassword" --value="P2ss4PROXY"
+choco config set --name="proxy" --value='http://squidproxy.dmz.unicru.com:8080'
+choco config set --name="proxyUser" --value="prodproxy"
+choco config set --name="proxyPassword" --value="Pr0dPr0xY"
 
 echo.############### Chocolatey Package Manager Feature Block ###############
 :: ## Defaults are listed and commented out. Copy line, uncomment, and modify.
